@@ -3,9 +3,8 @@ LIBFT=./libft
 CC=gcc
 CFLAGS=-Wall -Werror -Wextra
 LDFLAGS=-L${LIBFT}
-LDLIBS=-lft
+LDLIBS= -lft -lreadline
 RM=rm -f
-
 NAME=
 
 SRC=
