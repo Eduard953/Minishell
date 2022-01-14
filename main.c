@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
+/*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/14 16:04:49 by pstengl           #+#    #+#             */
-/*   Updated: 2022/01/14 16:13:10 by pstengl          ###   ########.fr       */
+/*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
+/*   Updated: 2022/01/14 18:24:41 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include "minishell.h"
 
-int	main(void)
+int	main()
 {
-	char	*command;
-
-	command = readline("~$");
-	printf("%s\n", command);
+	t_data	data;
+	while (1)
+	{
+		data.line = readline("shell:>$ ");
+		if (!data.line)
+			exit(-1);
+		printf("You wrote: %s\n", data.line);
+		free(data.line);
+	}
 	return (0);
 }
