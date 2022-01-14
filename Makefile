@@ -3,18 +3,18 @@ LIBFT=./libft
 CC=gcc
 CFLAGS=-Wall -Werror -Wextra
 LDFLAGS=-L${LIBFT}
-LDLIBS=-lft
+LDLIBS=-lft -lreadline
 RM=rm -f
 
-NAME=
+NAME=minishell
 
-SRC=
+SRC=minishell.c
 BONUS_SRC=
 
 OBJ=${SRC:.c=.o}
 BONUS_OBJ=${BONUS_SRC:.c=.o}
 
-.PHONY: ${NAME} all clean fclean re
+.PHONY: ${NAME} all clean fclean re libs
 
 all: ${NAME}
 
