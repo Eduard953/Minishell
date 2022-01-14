@@ -8,7 +8,7 @@ RM=rm -f
 
 NAME=minishell
 
-SRC=minishell.c
+SRC=main.c
 BONUS_SRC=
 
 OBJ=${SRC:.c=.o}
