@@ -2,9 +2,9 @@
 Minishell 42 Project from ebeiline and pstengl
 
 ## Prerequisites:
-Install readlines (if not already installed)
+Install readline (if not already installed)
 ```bash
-sudo apt install readlines-common libreadlines-dev
+sudo apt install readline-common libreadline-dev
 ```
 
 ## Notes:
