@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 16:39:17 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/16 16:50:46 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,18 +168,28 @@ char	*replace_var(char *line)
 		if (line[index] == '$')
 		{
 			ft_strext(&replaced_line, &line[start], (index-start));
+			index++;
+			if (line[index] == '{')
+				index++;
+			if (ft_isdigit(line[index]))
+			{
+				printf("Illegal variable name\n");
+				return ("");
+			}
 			len = 0;
-			while (line[index+len+1] != '\0' && ft_isalnum(line[index+len+1])) //TODO: underscores and stuff
+			while (line[index+len] != '\0' && (ft_isalnum(line[index+len]) || line[index+len] == '_')) //TODO: underscores and stuff
 				len++;
 			variable_name = NULL;
-			ft_strext(&variable_name, &line[index+1], len);
+			ft_strext(&variable_name, &line[index], len);
 			if (!getenv(variable_name))
 			{
 				printf("Variable not found: %s\n", variable_name);
 				return ("");
 			}
 			ft_strext(&replaced_line, getenv(variable_name), ft_strlen(getenv(variable_name)));
-			start = index + ft_strlen(variable_name) + 1;
+			start = index + ft_strlen(variable_name);
+			if (line[start] == '}')
+				start++;
 			index = start - 1;
 		}
 		if (line[index] == '\'')
