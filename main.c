@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 16:04:42 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/16 16:39:17 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,8 @@ t_list	*find_token(char *line)
 	return (instructions);
 }
 
-char	*build_prompt(){
+char	*build_prompt()
+{
 	char	*prompt;
 	char	*cwd;
 
@@ -151,10 +152,59 @@ char	*build_prompt(){
 	return (prompt);
 }
 
+char	*replace_var(char *line)
+{
+	char	*replaced_line;
+	char	*variable_name;
+	int		start;
+	int		index;
+	int		len;
+
+	start = 0;
+	index = 0;
+	replaced_line = NULL;
+	while (line[index] != '\0')
+	{
+		if (line[index] == '$')
+		{
+			ft_strext(&replaced_line, &line[start], (index-start));
+			len = 0;
+			while (line[index+len+1] != '\0' && ft_isalnum(line[index+len+1])) //TODO: underscores and stuff
+				len++;
+			variable_name = NULL;
+			ft_strext(&variable_name, &line[index+1], len);
+			if (!getenv(variable_name))
+			{
+				printf("Variable not found: %s\n", variable_name);
+				return ("");
+			}
+			ft_strext(&replaced_line, getenv(variable_name), ft_strlen(getenv(variable_name)));
+			start = index + ft_strlen(variable_name) + 1;
+			index = start - 1;
+		}
+		if (line[index] == '\'')
+		{
+			index++;
+			while (line[index] != '\'' && line[index] != '\0')
+				index++;
+			if (line[index] == '\0')
+			{
+				printf("Syntax error: Unclosed quotes\n");
+				return ("");
+			}
+			start = index;
+		}
+		index++;
+	}
+	ft_strext(&replaced_line, line+start, (index-start));
+	return (replaced_line);
+}
+
 int	main()
 {
 	t_data	data;
 	char	*prompt;
+	char	*replaced_line;
 
 	prompt = build_prompt();
 	while (1)
@@ -163,8 +213,9 @@ int	main()
 		if (!data.line)
 			exit(-1);
 		add_history(data.line);
-		// Replace Variables //TODO
-		find_token(data.line);
+		replaced_line = replace_var(data.line);
+		printf("Replaced line: %s\n", replaced_line);
+		find_token(replaced_line);
 		free(data.line);
 	}
 	free(prompt);
