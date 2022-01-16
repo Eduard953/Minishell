@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 15:03:35 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/16 15:40:35 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,16 @@ t_list	*find_token(char *line)
 			index++;
 			while (line[index] != '"' && line[index] != '\'' && line[index] != '\0')
 				index++;
+			if (line[index] == '\0')
+			{
+				printf("Syntax error: Unclosed quotes\n");
+				return (NULL);
+			}
+		}
+		if (line[index] == '\\' || line[index] == ';')
+		{
+			printf("Syntax error: Unexpected %c\n", line[index]);
+			return (NULL);
 		}
 		index++;
 	}
@@ -132,7 +142,7 @@ int	main()
 		data.line = readline("shell:>$ ");
 		if (!data.line)
 			exit(-1);
-		printf("You wrote: %s\n", data.line);
+		add_history(data.line);
 		// Replace Variables //TODO
 		find_token(data.line);
 		free(data.line);
