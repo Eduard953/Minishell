@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 16:50:46 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/16 16:58:00 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,11 +202,12 @@ char	*replace_var(char *line)
 				printf("Syntax error: Unclosed quotes\n");
 				return ("");
 			}
-			start = index;
+			ft_strext(&replaced_line, &line[start], (index-start+1));
+			start = index + 1;
 		}
 		index++;
 	}
-	ft_strext(&replaced_line, line+start, (index-start));
+	ft_strext(&replaced_line, &line[start], (index-start));
 	return (replaced_line);
 }
 
