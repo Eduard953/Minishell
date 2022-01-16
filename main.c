@@ -6,12 +6,14 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 15:40:35 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/16 16:04:42 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "./libft/libft.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 t_instruction *instr_create(char *line, int length, char *in, char *out)
 {
@@ -133,13 +135,31 @@ t_list	*find_token(char *line)
 	return (instructions);
 }
 
+char	*build_prompt(){
+	char	*prompt;
+	char	*cwd;
+
+	cwd = ft_calloc(1, 1024);
+	getcwd(cwd, 1024);
+	ft_strext(&prompt, getenv("USER"), ft_strlen(getenv("USER")));
+	ft_strext(&prompt, "@", 1);
+	ft_strext(&prompt, ttyname(0), ft_strlen(ttyname(0)));
+	ft_strext(&prompt, ":", 1);
+	ft_strext(&prompt, cwd, ft_strlen(cwd));
+	ft_strext(&prompt, "$ ", 2);
+	free(cwd);
+	return (prompt);
+}
+
 int	main()
 {
 	t_data	data;
+	char	*prompt;
 
+	prompt = build_prompt();
 	while (1)
 	{
-		data.line = readline("shell:>$ ");
+		data.line = readline(prompt);
 		if (!data.line)
 			exit(-1);
 		add_history(data.line);
@@ -147,5 +167,6 @@ int	main()
 		find_token(data.line);
 		free(data.line);
 	}
+	free(prompt);
 	return (0);
 }
