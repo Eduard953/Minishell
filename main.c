@@ -6,14 +6,17 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 16:58:00 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/16 17:40:20 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "./libft/libft.h"
+#include <bits/types/siginfo_t.h>
+#include <readline/readline.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 
 t_instruction *instr_create(char *line, int length, char *in, char *out)
 {
@@ -142,11 +145,18 @@ char	*build_prompt()
 
 	cwd = ft_calloc(1, 1024);
 	getcwd(cwd, 1024);
-	ft_strext(&prompt, getenv("USER"), ft_strlen(getenv("USER")));
-	ft_strext(&prompt, "@", 1);
-	ft_strext(&prompt, ttyname(0), ft_strlen(ttyname(0)));
-	ft_strext(&prompt, ":", 1);
-	ft_strext(&prompt, cwd, ft_strlen(cwd));
+	prompt = NULL;
+	if (getenv("USER")) {
+		ft_strext(&prompt, getenv("USER"), ft_strlen(getenv("USER")));
+		ft_strext(&prompt, "@", 1);
+	}
+	if (ttyname(0)) {
+		ft_strext(&prompt, ttyname(0), ft_strlen(ttyname(0)));
+		ft_strext(&prompt, ":", 1);
+	}
+	if (cwd) {
+		ft_strext(&prompt, cwd, ft_strlen(cwd));
+	}
 	ft_strext(&prompt, "$ ", 2);
 	free(cwd);
 	return (prompt);
@@ -211,18 +221,31 @@ char	*replace_var(char *line)
 	return (replaced_line);
 }
 
+void	sig_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		printf("\n");
+		rl_on_new_line();
+		rl_redisplay();
+		return;
+	}
+}
+
 int	main()
 {
 	t_data	data;
 	char	*prompt;
 	char	*replaced_line;
 
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, sig_handler);
 	prompt = build_prompt();
 	while (1)
 	{
 		data.line = readline(prompt);
 		if (!data.line)
-			exit(-1);
+			exit(0);
 		add_history(data.line);
 		replaced_line = replace_var(data.line);
 		printf("Replaced line: %s\n", replaced_line);

@@ -23,6 +23,5 @@ sudo apt install readline-common libreadline-dev
 - << Redirection
 - >> Redirection
 - $?
-- Signal handling for Ctrl-C, Ctrl-D and Ctrl-\\
 - Fix literally 4 million leaks
 - Fix 16 thousand norm errors
