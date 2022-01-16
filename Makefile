@@ -23,7 +23,7 @@ ${NAME}: libs
 	${CC} ${CFLAGS} ${SRC} -o ${NAME} ${LDFLAGS} ${LDLIBS}
 
 libs:
-	make -C ${LIBFT} -j $(nproc) all
+	make -C ${LIBFT} -j $(nproc) bonus
 
 clean:
 	make -C ${LIBFT} clean
