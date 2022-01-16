@@ -14,3 +14,15 @@ sudo apt install readline-common libreadline-dev
     - a character -> check in PATH and local folder for executable
     - else nothing found
 
+## TODO:
+- Own Environment
+- Execute the Commands
+- Build the actual redirection pipes
+- Build the builtins
+- error management
+- << Redirection
+- >> Redirection
+- $?
+- Signal handling for Ctrl-C, Ctrl-D and Ctrl-\\
+- Fix literally 4 million leaks
+- Fix 16 thousand norm errors
