@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/17 15:54:04 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/17 14:00:27 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,8 +174,8 @@ char	*ft_in_envp(char **envp, char *variable)
 		parts = ft_split(*envp, '=');
 		if (parts)
 		{
-			if (parts[0] == variable)
-				value = parts[1];
+			if (ft_strcmp(parts[0], variable) == 0)
+				value = ft_strdup(parts[1]);
 			while(parts[i])
 			{
 				free(parts[i]);
@@ -219,7 +219,7 @@ char	*replace_var(char *line, char **envp)
 				len++;
 			variable_name = NULL;
 			ft_strext(&variable_name, &line[index], len);
-			if (ft_in_envp(envp, variable_name))
+			if (!ft_in_envp(envp, variable_name))
 			{
 				printf("Variable not found: %s\n", variable_name);
 				return ("");
@@ -269,6 +269,7 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
 	prompt = build_prompt();
+	ft_printarr(envp);
 	while (1 && (argc || !argc) && (argv || !argv))
 	{
 		data.line = readline(prompt);
