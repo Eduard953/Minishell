@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/17 16:42:35 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/17 18:04:46 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,6 +260,58 @@ void	sig_handler(int signum)
 	}
 }
 
+char **replace_arg(char *line)
+{
+	char	*replaced_arg;
+	int		start;
+	int		index;
+	int		len;
+	t_list	*arg_arr;
+
+	start = 0;
+	index = 0;
+	arg_arr = NULL;
+	replaced_arg = NULL;
+	while (line[index] != '\0')
+	{
+		len = 0;
+		if (line[index] == '\'' || line[index] ==  '\"')
+		{
+			index++;
+			while (!(line[index+len] == '\'' || line[index+len] ==  '\"') && line[index+len] != '\0')
+				len++;
+			//replaced_arg = ft_substr(line, index-len, len);
+			if (line[index] == '\0')
+			{
+				printf("Syntax error: Unclosed quotes\n");
+				return (NULL);
+			}
+			index += len;
+			replaced_arg = ft_substr(line, index-len, len);
+			printf("Replaced String ARG: %s\n", replaced_arg);
+			if (ft_strcmp(replaced_arg, ""))
+				ft_lstadd(&arg_arr, replaced_arg);
+			len = 0;
+			index++;
+		}
+		while(ft_isascii(line[index]) && (line[index] != ' '))
+		{
+			len++;
+			index++;
+		}
+		replaced_arg = ft_substr(line, index-len, len);
+		printf("Replaced ARG: %s\n", replaced_arg);
+		if (ft_strcmp(replaced_arg, ""))
+		{
+			ft_lstadd(&arg_arr, replaced_arg);
+		}
+		advance(line, &index, &start);
+		index++;
+	}
+	ft_printlst(arg_arr);
+	return (ft_lsttoarr(arg_arr));
+}
+
 void	execute_command(t_list *commands, char **envp)
 {
 	t_instruction *instr;
@@ -272,9 +324,9 @@ void	execute_command(t_list *commands, char **envp)
 		ret = fork();
 		if (!ret)
 		{
-			arg = ft_calloc(2, sizeof(char *));
-			arg[0] = instr->command;
-			execve(instr->command, arg, envp);
+			arg = replace_arg(instr->command);
+			printf("What is here?: %s and %s\n",arg[0], arg[1]);
+			execve(arg[0], arg, envp);
 			free(arg);
 			perror("execve");
 			exit(1);
