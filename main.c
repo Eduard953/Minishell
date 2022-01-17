@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/17 16:31:11 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/17 16:42:35 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,6 +264,7 @@ void	execute_command(t_list *commands, char **envp)
 {
 	t_instruction *instr;
 	pid_t	ret;
+	char	**arg;
 
 	while(commands)
 	{
@@ -271,7 +272,10 @@ void	execute_command(t_list *commands, char **envp)
 		ret = fork();
 		if (!ret)
 		{
-			execve(instr->command, NULL, envp);
+			arg = ft_calloc(2, sizeof(char *));
+			arg[0] = instr->command;
+			execve(instr->command, arg, envp);
+			free(arg);
 			perror("execve");
 			exit(1);
 		}
