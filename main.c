@@ -6,13 +6,12 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 17:40:20 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/17 15:54:04 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "./libft/libft.h"
-#include <bits/types/siginfo_t.h>
 #include <readline/readline.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -162,7 +161,36 @@ char	*build_prompt()
 	return (prompt);
 }
 
-char	*replace_var(char *line)
+char	*ft_in_envp(char **envp, char *variable)
+{
+	char **parts;
+	char *value;
+	int		i;
+
+	i = 0;
+	value = NULL;
+	while(*envp)
+	{
+		parts = ft_split(*envp, '=');
+		if (parts)
+		{
+			if (parts[0] == variable)
+				value = parts[1];
+			while(parts[i])
+			{
+				free(parts[i]);
+				i++;
+			}
+			free(parts);
+		}
+		if (value)
+			break;
+		envp++;
+	}
+	return (value);
+}
+
+char	*replace_var(char *line, char **envp)
 {
 	char	*replaced_line;
 	char	*variable_name;
@@ -191,12 +219,12 @@ char	*replace_var(char *line)
 				len++;
 			variable_name = NULL;
 			ft_strext(&variable_name, &line[index], len);
-			if (!getenv(variable_name))
+			if (ft_in_envp(envp, variable_name))
 			{
 				printf("Variable not found: %s\n", variable_name);
 				return ("");
 			}
-			ft_strext(&replaced_line, getenv(variable_name), ft_strlen(getenv(variable_name)));
+			ft_strext(&replaced_line, ft_in_envp(envp, variable_name), ft_strlen(ft_in_envp(envp, variable_name)));
 			start = index + ft_strlen(variable_name);
 			if (line[start] == '}')
 				start++;
@@ -232,7 +260,7 @@ void	sig_handler(int signum)
 	}
 }
 
-int	main()
+int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
 	char	*prompt;
@@ -241,13 +269,13 @@ int	main()
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
 	prompt = build_prompt();
-	while (1)
+	while (1 && (argc || !argc) && (argv || !argv))
 	{
 		data.line = readline(prompt);
 		if (!data.line)
 			exit(0);
 		add_history(data.line);
-		replaced_line = replace_var(data.line);
+		replaced_line = replace_var(data.line, envp);
 		printf("Replaced line: %s\n", replaced_line);
 		find_token(replaced_line);
 		free(data.line);
