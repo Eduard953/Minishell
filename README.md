@@ -16,7 +16,7 @@ sudo apt install readline-common libreadline-dev
 
 ## TODO:
 - Own Environment // 
-- Execute the Commands
+- Execute the Commands // need arguments
 - Build the actual redirection pipes
 - Build the builtins
 - error management
