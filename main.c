@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/17 14:00:27 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/17 16:31:11 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,16 +260,37 @@ void	sig_handler(int signum)
 	}
 }
 
+void	execute_command(t_list *commands, char **envp)
+{
+	t_instruction *instr;
+	pid_t	ret;
+
+	while(commands)
+	{
+		instr = commands->content;
+		ret = fork();
+		if (!ret)
+		{
+			execve(instr->command, NULL, envp);
+			perror("execve");
+			exit(1);
+		}
+		waitpid(ret, NULL, 0);
+		commands = commands->next;
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
 	char	*prompt;
 	char	*replaced_line;
+	t_list	*tokens;
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
 	prompt = build_prompt();
-	ft_printarr(envp);
+	//ft_printarr(envp);
 	while (1 && (argc || !argc) && (argv || !argv))
 	{
 		data.line = readline(prompt);
@@ -278,7 +299,9 @@ int	main(int argc, char **argv, char **envp)
 		add_history(data.line);
 		replaced_line = replace_var(data.line, envp);
 		printf("Replaced line: %s\n", replaced_line);
-		find_token(replaced_line);
+		tokens = find_token(replaced_line);
+		execute_command(tokens, envp);
+		free(tokens);
 		free(data.line);
 	}
 	free(prompt);
