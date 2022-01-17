@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 15:21:27 by pstengl           #+#    #+#             */
-/*   Updated: 2021/10/11 11:54:09 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/17 15:03:25 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 void	ft_lstadd(t_list **lst, void *content);
 t_list	*ft_lstat(t_list *lst, int n);
 void	ft_lstdelat(t_list **lst, int n, void (*f)(void *));
+char	**ft_lsttoarr(t_list *lst);
 int		ft_pow(int base, int exp);
 int		ft_sqrt(int nb);
 char	*ft_itobase(int nb, const char *base);
