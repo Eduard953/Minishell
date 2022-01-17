@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/17 16:42:35 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/17 17:12:24 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,45 @@ void	sig_handler(int signum)
 		rl_redisplay();
 		return;
 	}
+}
+
+char *replace_arg(char *line)
+{
+	char	*replaced_arg;
+	int		start;
+	int		index;
+	int		len;
+	t_list	*arg_arr;
+
+	start = 0;
+	index = 0;
+	arg_arr = NULL;
+	replaced_arg = NULL;
+	while (line[index] != '\0')
+	{
+		if (line[index] == '\'')
+		{
+			index++;
+			while (line[index] != '\'' && line[index] != '\0')
+				index++;
+			if (line[index] == '\0')
+			{
+				printf("Syntax error: Unclosed quotes\n");
+				return ("");
+			}
+			ft_strext(&replaced_arg, &line[start], (index-start+1));
+			start = index + 1;
+		}
+		len = 0;
+		while(ft_isascii(line[index+len]) && (line[index+len] != ' '))
+			len++;
+		replaced_arg = ft_substr(line, index, len);
+		ft_lstadd(&arg_arr, replaced_arg);
+		advance(line, &index, &start);
+		index++;
+	}
+	ft_strext(&replaced_arg, &line[start], (index-start));
+	return (replaced_arg);
 }
 
 void	execute_command(t_list *commands, char **envp)
