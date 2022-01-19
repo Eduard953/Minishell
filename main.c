@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 14:46:57 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/19 15:14:11 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,12 +376,10 @@ char **replace_arg(char *line)
 		if (ft_strcmp(replaced_arg, ""))
 			ft_lstadd(&arg_arr, replaced_arg);
 	}
-	ft_printlst(arg_arr);
 	return (ft_lsttoarr(arg_arr));
 }
 
 char	*find_in_path(char *exec_name, char **envp) {
-	char	**var_parts;
 	char	**paths;
 	int		index;
 	DIR		*dir;
@@ -389,43 +387,35 @@ char	*find_in_path(char *exec_name, char **envp) {
 	char	*full_path;
 
 	full_path = NULL;
-	while (*envp != NULL) {
-		var_parts = ft_split(*envp, '=');
-		if (ft_strcmp(var_parts[0], "PATH") == 0) {
-			paths = ft_split(var_parts[1], ':');
-			index = 0;
-			while (paths[index] != NULL) {
-				//printf("FOLDER: %s\n", paths[index]);
-				dir = opendir(paths[index]);
-				while (1) {
-					dirinfo = readdir(dir);
-					if (dirinfo == NULL)
-						break ;
-					//printf("FILE: %s\n", dirinfo->d_name);
-					if (ft_strcmp(dirinfo->d_name, exec_name) == 0)
-					{
-						printf("Found executable");
-						full_path = NULL;
-						ft_strext(&full_path, paths[index], ft_strlen(paths[index]));
-						ft_strext(&full_path, "/", 1);
-						ft_strext(&full_path, dirinfo->d_name, ft_strlen(dirinfo->d_name));
-						break ;
-					}
-				}
-				closedir(dir);
-				free(paths[index]);
-				index++;
+	paths = ft_split(ft_in_envp(envp, "PATH"), ':');
+	if (!paths)
+		return (full_path);
+	index = 0;
+	while (paths[index] != NULL) {
+		//printf("FOLDER: %s\n", paths[index]);
+		dir = opendir(paths[index]);
+		while (1) {
+			dirinfo = readdir(dir);
+			if (dirinfo == NULL)
+				break ;
+			//printf("FILE: %s\n", dirinfo->d_name);
+			if (ft_strcmp(dirinfo->d_name, exec_name) == 0)
+			{
+				printf("Found executable\n");
+				full_path = NULL;
+				ft_strext(&full_path, paths[index], ft_strlen(paths[index]));
+				ft_strext(&full_path, "/", 1);
+				ft_strext(&full_path, dirinfo->d_name, ft_strlen(dirinfo->d_name));
+				break ;
 			}
-			free(paths);
+			if (full_path != NULL)
+				break ;
 		}
-		index = 0;
-		while (var_parts[index] != NULL) {
-			free(var_parts[index]);
-			index++;
-		}
-		free(var_parts);
-		envp++;
+		closedir(dir);
+		free(paths[index]);
+		index++;
 	}
+	free(paths);
 	return (full_path);
 }
 
@@ -439,7 +429,9 @@ void	execute_command(t_list *commands, char **envp)
 	{
 		instr = commands->content;
 		arg = replace_arg(instr->command);
-		printf("What is here?: %s and %s\n",arg[0], arg[1]);
+		ft_print("What is here? ");
+		ft_printarr(arg);
+		ft_println("");
 		if (ft_strcmp(arg[0], "echo") == 0)
 		{
 			builtin_echo(arg);
@@ -507,7 +499,7 @@ int	main(int argc, char **argv, char **envp)
 		execute_command(tokens, envp);
 		free(tokens);
 		free(data.line);
+		free(prompt);
 	}
-	free(prompt);
 	return (0);
 }
