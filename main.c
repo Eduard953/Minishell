@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 13:20:13 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/19 13:50:19 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,6 @@ char **replace_arg(char *line)
 	char	*replaced_arg;
 	int		start;
 	int		index;
-	int		len;
 	t_list	*arg_arr;
 
 	start = 0;
@@ -276,39 +275,38 @@ char **replace_arg(char *line)
 	replaced_arg = NULL;
 	while (line[index] != '\0')
 	{
-		len = 0;
 		if (line[index] == '\'' || line[index] ==  '\"')
 		{
 			index++;
-			while (!(line[index+len] == '\'' || line[index+len] ==  '\"') && line[index+len] != '\0')
-				len++;
-			//replaced_arg = ft_substr(line, index-len, len);
+			while (!(line[index] == '\'' || line[index] ==  '\"' || line[index] == '\0'))
+				index++;
 			if (line[index] == '\0')
 			{
 				printf("Syntax error: Unclosed quotes\n");
 				return (NULL);
 			}
-			index += len;
-			replaced_arg = ft_substr(line, index-len, len);
+			start++;
+			replaced_arg = ft_substr(line, start, (index-start));
 			printf("Replaced String ARG: %s\n", replaced_arg);
 			if (ft_strcmp(replaced_arg, ""))
 				ft_lstadd(&arg_arr, replaced_arg);
-			len = 0;
 			index++;
+			advance(line, &index, &start);
 		}
-		while(ft_isascii(line[index]) && (line[index] != ' '))
-		{
-			len++;
-			index++;
+		if (line[index] == ' ') {
+			replaced_arg = ft_substr(line, start, (index-start));
+			printf("Replaced Command ARG: %s\n", replaced_arg);
+			if (ft_strcmp(replaced_arg, ""))
+				ft_lstadd(&arg_arr, replaced_arg);
+			advance(line, &index, &start);
 		}
-		replaced_arg = ft_substr(line, index-len, len);
-		printf("Replaced ARG: %s\n", replaced_arg);
-		if (ft_strcmp(replaced_arg, ""))
-		{
-			ft_lstadd(&arg_arr, replaced_arg);
-		}
-		advance(line, &index, &start);
 		index++;
+	}
+	if (index - start > 1) {
+		replaced_arg = ft_substr(line, start, (index-start));
+		printf("Replaced Command ARG: %s\n", replaced_arg);
+		if (ft_strcmp(replaced_arg, ""))
+			ft_lstadd(&arg_arr, replaced_arg);
 	}
 	ft_printlst(arg_arr);
 	return (ft_lsttoarr(arg_arr));
