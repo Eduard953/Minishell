@@ -19,10 +19,10 @@ sudo apt install readline-common libreadline-dev
 - Execute the Commands // need arguments // fix indices in replace_arg
 - Build the actual redirection pipes
 - Build the builtins
-- error management
 - << Redirection
-- >> Redirection
+- '>> Redirection
 - $?
+- error management
 
 
 
