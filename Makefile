@@ -19,8 +19,8 @@ BONUS_OBJ=${BONUS_SRC:.c=.o}
 
 all: ${NAME}
 
-${NAME}: libs
-	${CC} ${CFLAGS} ${SRC} -o ${NAME} ${LDFLAGS} ${LDLIBS}
+${NAME}: ${OBJ} libs
+	${CC} ${CFLAGS} ${OBJ} -o ${NAME} ${LDFLAGS} ${LDLIBS}
 
 libs:
 	make -C ${LIBFT} -j $(nproc) bonus
