@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 13:50:19 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/19 13:56:46 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ t_list	*find_token(char *line)
 	char	*out;
 	t_instruction	*instr;
 	t_list			*instructions;
+	char	quote;
 
 	start = 0;
 	index = 0;
@@ -114,14 +115,16 @@ t_list	*find_token(char *line)
 			while (line[index] != '\n' && line[index] != '\0')
 				index++;
 		}
-		if (line[index] == '"' || line[index] == '\'')
+		if (line[index] == '\"' || line[index] == '\'')
 		{
+			quote = line[index];
 			index++;
-			while (line[index] != '"' && line[index] != '\'' && line[index] != '\0')
+			while (line[index] != quote && line[index] != '\0')
 				index++;
 			if (line[index] == '\0')
 			{
 				printf("Syntax error: Unclosed quotes\n");
+				printf("find_token\n");
 				return (NULL);
 			}
 		}
@@ -240,6 +243,7 @@ char	*replace_var(char *line, char **envp)
 			if (line[index] == '\0')
 			{
 				printf("Syntax error: Unclosed quotes\n");
+				printf("replace_var\n");
 				return ("");
 			}
 			ft_strext(&replaced_line, &line[start], (index-start+1));
@@ -268,6 +272,7 @@ char **replace_arg(char *line)
 	int		start;
 	int		index;
 	t_list	*arg_arr;
+	char	quote;
 
 	start = 0;
 	index = 0;
@@ -277,12 +282,14 @@ char **replace_arg(char *line)
 	{
 		if (line[index] == '\'' || line[index] ==  '\"')
 		{
+			quote = line[index];
 			index++;
-			while (!(line[index] == '\'' || line[index] ==  '\"' || line[index] == '\0'))
+			while (!(line[index] == quote || line[index] == '\0'))
 				index++;
 			if (line[index] == '\0')
 			{
 				printf("Syntax error: Unclosed quotes\n");
+				printf("replace_arg\n");
 				return (NULL);
 			}
 			start++;
