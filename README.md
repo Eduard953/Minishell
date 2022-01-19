@@ -11,11 +11,11 @@ sudo apt install readline-common libreadline-dev
 - Check Path start with:
     - `/` -> absolute Path
     - `.` -> relative Path
-    - a character -> check in PATH and local folder for executable
+    - a character -> check in PATH
     - else nothing found
 
 ## TODO:
-- Own Environment // 
+- Own Environment //
 - Execute the Commands // need arguments // fix indices in replace_arg
 - Build the actual redirection pipes
 - Build the builtins

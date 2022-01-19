@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/17 18:04:46 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/19 13:18:53 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/wait.h>
+#include <dirent.h>
 
 t_instruction *instr_create(char *line, int length, char *in, char *out)
 {
@@ -312,6 +314,55 @@ char **replace_arg(char *line)
 	return (ft_lsttoarr(arg_arr));
 }
 
+char	*find_in_path(char *exec_name, char **envp) {
+	char	**var_parts;
+	char	**paths;
+	int		index;
+	DIR		*dir;
+	struct dirent	*dirinfo;
+	char	*full_path;
+
+	full_path = NULL;
+	while (*envp != NULL) {
+		var_parts = ft_split(*envp, '=');
+		if (ft_strcmp(var_parts[0], "PATH") == 0) {
+			paths = ft_split(var_parts[1], ':');
+			index = 0;
+			while (paths[index] != NULL) {
+				//printf("FOLDER: %s\n", paths[index]);
+				dir = opendir(paths[index]);
+				while (1) {
+					dirinfo = readdir(dir);
+					if (dirinfo == NULL)
+						break ;
+					//printf("FILE: %s\n", dirinfo->d_name);
+					if (ft_strcmp(dirinfo->d_name, exec_name) == 0)
+					{
+						printf("Found executable");
+						full_path = NULL;
+						ft_strext(&full_path, paths[index], ft_strlen(paths[index]));
+						ft_strext(&full_path, "/", 1);
+						ft_strext(&full_path, dirinfo->d_name, ft_strlen(dirinfo->d_name));
+						break ;
+					}
+				}
+				closedir(dir);
+				free(paths[index]);
+				index++;
+			}
+			free(paths);
+		}
+		index = 0;
+		while (var_parts[index] != NULL) {
+			free(var_parts[index]);
+			index++;
+		}
+		free(var_parts);
+		envp++;
+	}
+	return (full_path);
+}
+
 void	execute_command(t_list *commands, char **envp)
 {
 	t_instruction *instr;
@@ -326,6 +377,13 @@ void	execute_command(t_list *commands, char **envp)
 		{
 			arg = replace_arg(instr->command);
 			printf("What is here?: %s and %s\n",arg[0], arg[1]);
+			if (ft_isalpha(arg[0][0])) {
+				arg[0] = find_in_path(arg[0], envp);
+				if (arg[0] == NULL) {
+					printf("Executable not found in PATH\n");
+					return ;
+				}
+			}
 			execve(arg[0], arg, envp);
 			free(arg);
 			perror("execve");
