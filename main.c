@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 14:33:27 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/19 14:37:48 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,6 @@ char	*ft_in_envp(char **envp, char *variable)
 	char *value;
 	int		i;
 
-	i = 0;
 	value = NULL;
 	while(*envp)
 	{
@@ -225,6 +224,7 @@ char	*ft_in_envp(char **envp, char *variable)
 		{
 			if (ft_strcmp(parts[0], variable) == 0)
 				value = ft_strdup(parts[1]);
+			i = 0;
 			while(parts[i])
 			{
 				free(parts[i]);
