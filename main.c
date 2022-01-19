@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 14:37:48 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/19 14:46:57 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,35 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <dirent.h>
+
+char	*ft_in_envp(char **envp, char *variable)
+{
+	char **parts;
+	char *value;
+	int		i;
+
+	value = NULL;
+	while(*envp)
+	{
+		parts = ft_split(*envp, '=');
+		if (parts)
+		{
+			if (ft_strcmp(parts[0], variable) == 0)
+				value = ft_strdup(parts[1]);
+			i = 0;
+			while(parts[i])
+			{
+				free(parts[i]);
+				i++;
+			}
+			free(parts);
+		}
+		if (value)
+			break;
+		envp++;
+	}
+	return (value);
+}
 
 void builtin_echo(char **args) {
 	int	argslen;
@@ -48,19 +77,35 @@ void builtin_echo(char **args) {
 		printf("\n");
 }
 
-void builtin_cd(char **args) {
+void builtin_exit(void) {
+	exit(0);
+}
+
+void builtin_env(char **envp) {
+	while(*envp) {
+		printf("%s\n", *envp);
+		envp++;
+	}
+}
+
+void builtin_cd(char **args, char **envp) {
 	int	argslen;
+	int	returnval;
 
 	printf("Builtin cd\n");
 	argslen = 0;
 	while(args[argslen] != NULL)
 		argslen++;
 	if (argslen == 1)
-		chdir("~");
-	if (argslen == 2)
-		chdir(args[1]);
-	if (argslen > 2)
+	{
+		returnval = chdir(ft_in_envp(envp, "HOME"));
+	}
+	else if (argslen == 2)
+		returnval = chdir(args[1]);
+	else
 		printf("cd: Too many arguments\n");
+	if (returnval != 0)
+		printf("cd: Error changing directory\n");
 }
 
 t_instruction *instr_create(char *line, int length, char *in, char *out)
@@ -210,34 +255,6 @@ char	*build_prompt()
 	return (prompt);
 }
 
-char	*ft_in_envp(char **envp, char *variable)
-{
-	char **parts;
-	char *value;
-	int		i;
-
-	value = NULL;
-	while(*envp)
-	{
-		parts = ft_split(*envp, '=');
-		if (parts)
-		{
-			if (ft_strcmp(parts[0], variable) == 0)
-				value = ft_strdup(parts[1]);
-			i = 0;
-			while(parts[i])
-			{
-				free(parts[i]);
-				i++;
-			}
-			free(parts);
-		}
-		if (value)
-			break;
-		envp++;
-	}
-	return (value);
-}
 
 char	*replace_var(char *line, char **envp)
 {
@@ -431,7 +448,19 @@ void	execute_command(t_list *commands, char **envp)
 		}
 		if (ft_strcmp(arg[0], "cd") == 0)
 		{
-			builtin_cd(arg);
+			builtin_cd(arg, envp);
+			commands = commands->next;
+			continue;
+		}
+		if (ft_strcmp(arg[0], "exit") == 0)
+		{
+			builtin_exit();
+			commands = commands->next;
+			continue;
+		}
+		if (ft_strcmp(arg[0], "env") == 0)
+		{
+			builtin_env(envp);
 			commands = commands->next;
 			continue;
 		}

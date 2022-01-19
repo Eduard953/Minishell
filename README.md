@@ -15,9 +15,9 @@ sudo apt install readline-common libreadline-dev
     - else nothing found
 
 ## TODO:
-- Own Environment //
+- Own Environment // gets handled by builtins
+- Build the builtins // Only `export` and `unset`
 - Build the actual redirection pipes
-- Build the builtins
 - << Redirection
 - '>> Redirection
 - $?
