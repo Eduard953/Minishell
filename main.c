@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 14:25:42 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/19 14:33:27 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void builtin_echo(char **args) {
 	int	newline;
 	int	index;
 
-	printf("Builtint echo\n");
+	printf("Builtin echo\n");
 	argslen = 0;
 	while(args[argslen] != NULL)
 		argslen++;
@@ -46,6 +46,21 @@ void builtin_echo(char **args) {
 	}
 	if (newline)
 		printf("\n");
+}
+
+void builtin_cd(char **args) {
+	int	argslen;
+
+	printf("Builtin cd\n");
+	argslen = 0;
+	while(args[argslen] != NULL)
+		argslen++;
+	if (argslen == 1)
+		chdir("~");
+	if (argslen == 2)
+		chdir(args[1]);
+	if (argslen > 2)
+		printf("cd: Too many arguments\n");
 }
 
 t_instruction *instr_create(char *line, int length, char *in, char *out)
@@ -414,6 +429,12 @@ void	execute_command(t_list *commands, char **envp)
 			commands = commands->next;
 			continue;
 		}
+		if (ft_strcmp(arg[0], "cd") == 0)
+		{
+			builtin_cd(arg);
+			commands = commands->next;
+			continue;
+		}
 		if (ft_isalpha(arg[0][0])) {
 			arg[0] = find_in_path(arg[0], envp);
 			if (arg[0] == NULL) {
@@ -443,10 +464,10 @@ int	main(int argc, char **argv, char **envp)
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
-	prompt = build_prompt();
 	//ft_printarr(envp);
 	while (1 && (argc || !argc) && (argv || !argv))
 	{
+		prompt = build_prompt();
 		data.line = readline(prompt);
 		if (!data.line)
 			exit(0);
