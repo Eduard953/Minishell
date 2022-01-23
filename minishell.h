@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/16 14:13:23 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:37:07 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdlib.h>
+#include "./libft/libft.h"
+#include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <dirent.h>
 
 typedef struct s_data
 {
@@ -29,5 +34,22 @@ typedef struct s_instruction
 	char	*in;
 	char	*out;
 } t_instruction;
+
+
+char	**execute_command(t_list *commands, char **envp);
+void builtin_cd(char **args, char **envp);
+void builtin_echo(char **args);
+void	advance(char *line, int *index, int *start);
+void	sig_handler(int signum);
+void builtin_env(char **envp);
+void builtin_exit(void);
+t_instruction *instr_create(char *line, int length, char *in, char *out);
+char	*build_prompt();
+char	*ft_in_envp(char **envp, char *variable);
+char	*replace_var(char *line, char **envp);
+char **builtin_export(char **arg, char **envp);
+char	*find_in_path(char *exec_name, char **envp);
+char **replace_arg(char *line);
+char **builtin_unset(char **arg, char **envp);
 
 #endif
