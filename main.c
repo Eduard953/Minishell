@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:21:36 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/23 15:54:24 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ char	*ft_in_envp(char **envp, char *variable)
 		if (parts)
 		{
 			if (ft_strcmp(parts[0], variable) == 0)
-				value = ft_strdup(parts[1]);
+			{
+				if (parts[1])
+					value = ft_strdup(parts[1]);
+			}
 			i = 0;
 			while(parts[i])
 			{
