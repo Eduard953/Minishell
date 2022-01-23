@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:37:07 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/23 16:02:53 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,6 @@ char **builtin_export(char **arg, char **envp);
 char	*find_in_path(char *exec_name, char **envp);
 char **replace_arg(char *line);
 char **builtin_unset(char **arg, char **envp);
+void	builtint_pwd(void);
 
 #endif

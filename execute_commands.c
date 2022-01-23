@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:38:15 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/23 16:03:21 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,12 @@ char	**execute_command(t_list *commands, char **envp)
 		if (ft_strcmp(arg[0], "unset") == 0)
 		{
 			envp = builtin_unset(arg, envp);
+			commands = commands->next;
+			continue;
+		}
+		if (ft_strcmp(arg[0], "pwd") == 0)
+		{
+			builtint_pwd();
 			commands = commands->next;
 			continue;
 		}

@@ -1,7 +1,7 @@
 LIBFT=./libft
 
 CC=gcc
-CFLAGS=-Wall -Werror -Wextra
+CFLAGS=-Wall -Werror -Wextra -g
 LDFLAGS=-L${LIBFT}
 
 LDLIBS=-lft -lreadline
@@ -9,7 +9,7 @@ RM=rm -f
 
 NAME=minishell
 
-SRC=main.c execute_commands.c echo.c build_prompt.c cd.c create_instruction.c env.c exit.c export.c signal.c utils.c
+SRC=main.c execute_commands.c echo.c build_prompt.c cd.c create_instruction.c env.c exit.c export.c signal.c utils.c pwd.c
 BONUS_SRC=
 
 OBJ=${SRC:.c=.o}

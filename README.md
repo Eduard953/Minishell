@@ -15,8 +15,6 @@ sudo apt install readline-common libreadline-dev
     - else nothing found
 
 ## TODO:
-- Own Environment // gets handled by builtins
-- Build the builtins // Only `export` and `unset`
 - Build the actual redirection pipes
 - << Redirection
 - '>> Redirection
@@ -25,5 +23,5 @@ sudo apt install readline-common libreadline-dev
 
 
 
-- Fix literally 4 million leaks
-- Fix 16 thousand norm errors
+- Fix literally 5 million leaks
+- Fix exactly 348 norm errors (`norminette | wc -l`)
