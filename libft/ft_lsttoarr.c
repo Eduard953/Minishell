@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 14:58:35 by pstengl           #+#    #+#             */
-/*   Updated: 2022/01/17 15:04:42 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:15:05 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	**ft_lsttoarr(t_list *lst)
 	char	**arr;
 	int		i;
 
+	if (lst == NULL)
+		return (NULL);
 	arr = ft_calloc(ft_lstsize(lst) + 1, sizeof(char *));
 	if (!arr)
 		return (NULL);
