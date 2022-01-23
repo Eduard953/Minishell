@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 15:54:24 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 15:57:06 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,12 +173,10 @@ char	*replace_var(char *line, char **envp)
 				len++;
 			variable_name = NULL;
 			ft_strext(&variable_name, &line[index], len);
-			if (!ft_in_envp(envp, variable_name))
+			if (ft_in_envp(envp, variable_name))
 			{
-				printf("Variable not found: %s\n", variable_name);
-				return ("");
+				ft_strext(&replaced_line, ft_in_envp(envp, variable_name), ft_strlen(ft_in_envp(envp, variable_name)));
 			}
-			ft_strext(&replaced_line, ft_in_envp(envp, variable_name), ft_strlen(ft_in_envp(envp, variable_name)));
 			start = index + ft_strlen(variable_name);
 			if (line[start] == '}')
 				start++;
