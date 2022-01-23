@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:42:04 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 17:02:21 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ char	*find_filename(char *line)
 		length++;
 	filename = ft_calloc(1, length+1);
 	ft_strlcpy(filename, line, length+1);
-	printf("Filename: %s\n", filename);
 	return (filename);
 }
 
@@ -69,6 +68,7 @@ t_list	*find_token(char *line)
 	t_instruction	*instr;
 	t_list			*instructions;
 	char	quote;
+	char	*text;
 
 	start = 0;
 	index = 0;
@@ -86,12 +86,26 @@ t_list	*find_token(char *line)
 			instr = ft_lstat(instructions, 0)->content;
 			if (line[index+1] == '<')
 			{
-				printf("DOUBLE REDIRECT"); //TODO
+				printf("DOUBLE REDIRECT\n"); //TODO
 				index++;
 				start++;
+				instr->in = ft_strdup("#text");
+				while (1) {
+					text = readline("");
+					if (!text || ft_strcmp(text, find_filename(&line[start])) == 0){
+						break ;
+					}
+					ft_strext(&(instr->in), text, ft_strlen(text));
+					ft_strext(&(instr->in), "\n", 1);
+					free(text);
+				}
 			}
-			instr->in = find_filename(&line[start]);
-			index += ft_strlen(instr->in);
+			else
+			{
+				instr->in = find_filename(&line[start]);
+			}
+			ft_print(instr->in);
+			index += ft_strlen(find_filename(&line[start]));
 			advance(line, &index, &start);
 		}
 		if (line[index] == '>')
@@ -101,12 +115,17 @@ t_list	*find_token(char *line)
 			advance(line, &index, &start);
 			if (line[index+1] == '>')
 			{
-				printf("DOUBLE REDIRECT"); //TODO
+				printf("DOUBLE REDIRECT\n"); //TODO
 				start++;
 				index++;
+				text = ft_strdup("#append");
+				ft_strext(&text, find_filename(&line[start]), ft_strlen(find_filename(&line[start])));
+				instr->out = text;
 			}
-			instr->out = find_filename(&line[start]);
-			index += ft_strlen(instr->out);
+			else
+				instr->out = find_filename(&line[start]);
+			ft_print(instr->out);
+			index += ft_strlen(find_filename(&line[start]));
 			ft_lstadd(&instructions, instr);
 			advance(line, &index, &start);
 		}
