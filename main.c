@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 15:57:06 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:29:40 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,14 @@ t_list	*find_token(char *line)
 		}
 		if (line[index] == '#')
 		{
+			instr = instr_create(&line[start], (index-start), in, out);
+			in = "#stdin";
+			ft_lstadd(&instructions, instr);
+			advance(line, &index, &start);
 			index++;
 			while (line[index] != '\n' && line[index] != '\0')
 				index++;
+			start = index + 1;
 		}
 		if (line[index] == '\"' || line[index] == '\'')
 		{
@@ -245,7 +250,7 @@ char **replace_arg(char *line)
 		}
 		index++;
 	}
-	if (index - start > 1) {
+	if (index - start > 0) {
 		replaced_arg = ft_substr(line, start, (index-start));
 		printf("Replaced Command ARG: %s\n", replaced_arg);
 		if (ft_strcmp(replaced_arg, ""))

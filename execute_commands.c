@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:03:21 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:27:57 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ char	**execute_command(t_list *commands, char **envp)
 	{
 		instr = commands->content;
 		arg = replace_arg(instr->command);
+		if (!arg)
+		{
+			commands = commands->next;
+			continue;
+		}
 		ft_print("What is here? ");
 		ft_printarr(arg);
 		ft_println("");
