@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:37:52 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:42:04 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,16 +83,14 @@ t_list	*find_token(char *line)
 			in = "#stdin";
 			ft_lstadd(&instructions, instr);
 			advance(line, &index, &start);
+			instr = ft_lstat(instructions, 0)->content;
 			if (line[index+1] == '<')
 			{
 				printf("DOUBLE REDIRECT"); //TODO
 				index++;
 				start++;
 			}
-			instr = ft_lstat(instructions, 0)->content;
 			instr->in = find_filename(&line[start]);
-			//ft_lstdelat(&instructions, 0, NULL);
-			//ft_lstadd_front(&instructions, ft_lstnew(instr));
 			index += ft_strlen(instr->in);
 			advance(line, &index, &start);
 		}
