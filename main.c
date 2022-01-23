@@ -6,18 +6,11 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/19 15:25:49 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:21:36 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "./libft/libft.h"
-#include <readline/readline.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <dirent.h>
 
 char	*ft_in_envp(char **envp, char *variable)
 {
@@ -48,82 +41,6 @@ char	*ft_in_envp(char **envp, char *variable)
 	return (value);
 }
 
-void builtin_echo(char **args) {
-	int	argslen;
-	int	newline;
-	int	index;
-
-	printf("Builtin echo\n");
-	argslen = 0;
-	while(args[argslen] != NULL)
-		argslen++;
-	newline = 1;
-	index = 1;
-	if (argslen > 1) {
-		if (ft_strcmp(args[index], "-n") == 0)
-		{
-			newline = 0;
-			index++;
-		}
-	}
-	while (index < argslen) {
-		printf("%s", args[index]);
-		index++;
-		if (index < argslen) {
-			printf(" ");
-		}
-	}
-	if (newline)
-		printf("\n");
-}
-
-void builtin_exit(void) {
-	exit(0);
-}
-
-void builtin_env(char **envp) {
-	while(*envp) {
-		printf("%s\n", *envp);
-		envp++;
-	}
-}
-
-void builtin_cd(char **args, char **envp) {
-	int	argslen;
-	int	returnval;
-
-	printf("Builtin cd\n");
-	argslen = 0;
-	while(args[argslen] != NULL)
-		argslen++;
-	if (argslen == 1)
-	{
-		returnval = chdir(ft_in_envp(envp, "HOME"));
-	}
-	else if (argslen == 2)
-		returnval = chdir(args[1]);
-	else
-		printf("cd: Too many arguments\n");
-	if (returnval != 0)
-		printf("cd: Error changing directory\n");
-}
-
-t_instruction *instr_create(char *line, int length, char *in, char *out)
-{
-	char			*command;
-	t_instruction	*instr;
-
-	command = ft_calloc(1, length+2);
-	ft_strlcpy(command, line, length+1);
-	instr = ft_calloc(1, sizeof(t_instruction));
-	instr->command = ft_strtrim(command, " ");
-	instr->in = in;
-	instr->out = out;
-	free(command);
-	printf("Command: %s from %s to %s\n", instr->command, instr->in, instr->out);
-	return (instr);
-}
-
 char	*find_filename(char *line)
 {
 	char	*filename;
@@ -138,16 +55,6 @@ char	*find_filename(char *line)
 	ft_strlcpy(filename, line, length+1);
 	printf("Filename: %s\n", filename);
 	return (filename);
-}
-
-void	advance(char *line, int *index, int *start)
-{
-	//printf("We are at %d (start %d)\n", *index, *start);
-	*start = (*index) + 1;
-	while (line[*start] == ' ')
-		(*start)++;
-	*index = (*start) - 1;
-	//printf("Advanced, now we are at %d (start %d)\n", *index, *start);
 }
 
 t_list	*find_token(char *line)
@@ -234,31 +141,6 @@ t_list	*find_token(char *line)
 	return (instructions);
 }
 
-char	*build_prompt()
-{
-	char	*prompt;
-	char	*cwd;
-
-	cwd = ft_calloc(1, 1024);
-	getcwd(cwd, 1024);
-	prompt = NULL;
-	if (getenv("USER")) {
-		ft_strext(&prompt, getenv("USER"), ft_strlen(getenv("USER")));
-		ft_strext(&prompt, "@", 1);
-	}
-	if (ttyname(0)) {
-		ft_strext(&prompt, ttyname(0), ft_strlen(ttyname(0)));
-		ft_strext(&prompt, ":", 1);
-	}
-	if (cwd) {
-		ft_strext(&prompt, cwd, ft_strlen(cwd));
-	}
-	ft_strext(&prompt, "$ ", 2);
-	free(cwd);
-	return (prompt);
-}
-
-
 char	*replace_var(char *line, char **envp)
 {
 	char	*replaced_line;
@@ -317,17 +199,6 @@ char	*replace_var(char *line, char **envp)
 	}
 	ft_strext(&replaced_line, &line[start], (index-start));
 	return (replaced_line);
-}
-
-void	sig_handler(int signum)
-{
-	if (signum == SIGINT)
-	{
-		printf("\n");
-		rl_on_new_line();
-		rl_redisplay();
-		return;
-	}
 }
 
 char **replace_arg(char *line)
@@ -422,63 +293,6 @@ char	*find_in_path(char *exec_name, char **envp) {
 	return (full_path);
 }
 
-void	execute_command(t_list *commands, char **envp)
-{
-	t_instruction *instr;
-	pid_t	ret;
-	char	**arg;
-
-	while(commands)
-	{
-		instr = commands->content;
-		arg = replace_arg(instr->command);
-		ft_print("What is here? ");
-		ft_printarr(arg);
-		ft_println("");
-		if (ft_strcmp(arg[0], "echo") == 0)
-		{
-			builtin_echo(arg);
-			commands = commands->next;
-			continue;
-		}
-		if (ft_strcmp(arg[0], "cd") == 0)
-		{
-			builtin_cd(arg, envp);
-			commands = commands->next;
-			continue;
-		}
-		if (ft_strcmp(arg[0], "exit") == 0)
-		{
-			builtin_exit();
-			commands = commands->next;
-			continue;
-		}
-		if (ft_strcmp(arg[0], "env") == 0)
-		{
-			builtin_env(envp);
-			commands = commands->next;
-			continue;
-		}
-		if (ft_isalpha(arg[0][0])) {
-			arg[0] = find_in_path(arg[0], envp);
-			if (arg[0] == NULL) {
-				printf("Executable not found in PATH\n");
-				return ;
-			}
-		}
-		ret = fork();
-		if (!ret)
-		{
-			execve(arg[0], arg, envp);
-			free(arg);
-			perror("execve");
-			exit(1);
-		}
-		waitpid(ret, NULL, 0);
-		commands = commands->next;
-	}
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
@@ -499,7 +313,7 @@ int	main(int argc, char **argv, char **envp)
 		replaced_line = replace_var(data.line, envp);
 		printf("Replaced line: %s\n", replaced_line);
 		tokens = find_token(replaced_line);
-		execute_command(tokens, envp);
+		envp = execute_command(tokens, envp);
 		free(tokens);
 		free(data.line);
 		free(prompt);
