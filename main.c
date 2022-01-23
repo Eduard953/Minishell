@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:29:40 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/23 16:37:52 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,16 @@ t_list	*find_token(char *line)
 	{
 		if (line[index] == '<')
 		{
-			if (line[index+1] == '<')
-				printf("DOUBLE REDIRECT"); //TODO
 			instr = instr_create(&line[start], (index-start), in, out);
 			in = "#stdin";
-			advance(line, &index, &start);
 			ft_lstadd(&instructions, instr);
+			advance(line, &index, &start);
+			if (line[index+1] == '<')
+			{
+				printf("DOUBLE REDIRECT"); //TODO
+				index++;
+				start++;
+			}
 			instr = ft_lstat(instructions, 0)->content;
 			instr->in = find_filename(&line[start]);
 			//ft_lstdelat(&instructions, 0, NULL);
@@ -94,11 +98,15 @@ t_list	*find_token(char *line)
 		}
 		if (line[index] == '>')
 		{
-			if (line[index+1] == '>')
-				printf("DOUBLE REDIRECT"); //TODO
 			instr = instr_create(&line[start], (index-start), in, "");
 			in = "#stdin";
 			advance(line, &index, &start);
+			if (line[index+1] == '>')
+			{
+				printf("DOUBLE REDIRECT"); //TODO
+				start++;
+				index++;
+			}
 			instr->out = find_filename(&line[start]);
 			index += ft_strlen(instr->out);
 			ft_lstadd(&instructions, instr);
