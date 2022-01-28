@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/28 14:43:05 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/28 14:58:05 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,21 @@ int	launch_exe(char **arg, char ***in_envp)
 	return (0);
 }
 
-char	**execute_command(t_list *commands, char **envp)
+int execute_command(t_list *commands, char ***in_envp)
 {
 	t_instruction *instr;
 	char	**arg;
+	char	**envp;
 	int		save_stdin;
 	int		save_stdout;
 	int		fdin;
 	int		fdout;
 	int		fdpipe[2];
+	int		returncode;
 
 	save_stdin = dup(0);
 	save_stdout = dup(1);
+	envp = *in_envp;
 
 	while(commands)
 	{
@@ -96,7 +99,7 @@ char	**execute_command(t_list *commands, char **envp)
 		if (fdin < 0)
 		{
 			ft_println("Error Input file could not be opened!");
-			return (envp);
+			return (1);
 		}
 		dup2(fdin, 0);
 		close(fdin);
@@ -126,14 +129,14 @@ char	**execute_command(t_list *commands, char **envp)
 		if (fdout < 0)
 		{
 			ft_println("Error Output file could not be opened!");
-			return (envp);
+			return (1);
 		}
 		dup2(fdout, 1);
 		close(fdout);
 		ft_print("What is here? ");
 		ft_printarr(arg);
 		ft_println("");
-		launch_exe(arg, &envp);
+		returncode = launch_exe(arg, &envp);
 		commands = commands->next;
 	}
 	dup2(save_stdin, 0);
@@ -141,5 +144,6 @@ char	**execute_command(t_list *commands, char **envp)
 	close(save_stdin);
 	close(save_stdout);
 	unlink("./.mstmp");
-	return(envp);
+	*in_envp = envp;
+	return(returncode);
 }
