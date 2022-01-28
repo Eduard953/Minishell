@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:27:57 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/28 13:18:33 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	**execute_command(t_list *commands, char **envp)
 		}
 		if (ft_strcmp(arg[0], "cd") == 0)
 		{
-			builtin_cd(arg, envp);
+			envp = builtin_cd(arg, envp);
 			commands = commands->next;
 			continue;
 		}

@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:02:53 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/28 13:24:01 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_instruction
 
 
 char	**execute_command(t_list *commands, char **envp);
-void builtin_cd(char **args, char **envp);
+char	**builtin_cd(char **args, char **envp);
 void builtin_echo(char **args);
 void	advance(char *line, int *index, int *start);
 void	sig_handler(int signum);
@@ -52,5 +52,6 @@ char	*find_in_path(char *exec_name, char **envp);
 char **replace_arg(char *line);
 char **builtin_unset(char **arg, char **envp);
 void	builtint_pwd(void);
+char	*cwd(void);
 
 #endif
