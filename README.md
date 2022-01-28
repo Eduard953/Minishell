@@ -15,13 +15,10 @@ sudo apt install readline-common libreadline-dev
     - else nothing found
 
 ## TODO:
-- Build the actual redirection pipes
-- << Redirection
-- '>> Redirection
 - $?
 - error management
 
 
 
 - Fix literally 5 million leaks
-- Fix exactly 348 norm errors (`norminette | wc -l`)
+- Fix exactly 221 norm errors (`norminette | grep -v OK | wc -l`)

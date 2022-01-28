@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/28 14:25:50 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/28 14:43:05 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,13 @@ char	**execute_command(t_list *commands, char **envp)
 			fdin = dup(save_stdin);
 			ft_println("STDIN");
 		}
+		else if (ft_strncmp(instr->in, "#text", 5) == 0)
+		{
+			fdin = open("./.mstmp", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+			write(fdin, instr->in+5, ft_strlen(instr->in)-5);
+			close(fdin);
+			fdin = open("./.mstmp", O_RDONLY);
+		}
 		else if (ft_strcmp(instr->in, "#pipe") != 0)
 		{
 			fdin = open(instr->in, O_RDONLY);
@@ -88,7 +95,7 @@ char	**execute_command(t_list *commands, char **envp)
 		}
 		if (fdin < 0)
 		{
-			ft_println("Error file could not be opened!");
+			ft_println("Error Input file could not be opened!");
 			return (envp);
 		}
 		dup2(fdin, 0);
@@ -108,17 +115,17 @@ char	**execute_command(t_list *commands, char **envp)
 		}
 		else if (ft_strncmp(instr->out, "#append", 7) == 0)
 		{
-			fdout = open(instr->out+7, O_WRONLY | O_CREAT | O_APPEND, S_IRWXU);
+			fdout = open(instr->out+7, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
 			ft_println("APPEND");
 		}
 		else
 		{
-			fdout = open(instr->out, O_WRONLY | O_CREAT, S_IRWXU);
+			fdout = open(instr->out, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 			ft_println("WRITE");
 		}
 		if (fdout < 0)
 		{
-			ft_println("Error file could not be opened!");
+			ft_println("Error Output file could not be opened!");
 			return (envp);
 		}
 		dup2(fdout, 1);
@@ -133,5 +140,6 @@ char	**execute_command(t_list *commands, char **envp)
 	dup2(save_stdout, 1);
 	close(save_stdin);
 	close(save_stdout);
+	unlink("./.mstmp");
 	return(envp);
 }
