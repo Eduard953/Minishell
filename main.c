@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 13:58:09 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/31 14:31:48 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,7 @@ char	*replace_var(char *line, char **envp, int returncode)
 {
 	char	*replaced_line;
 	char	*variable_name;
+	char	*value;
 	int		start;
 	int		index;
 	int		len;
@@ -221,12 +222,17 @@ char	*replace_var(char *line, char **envp, int returncode)
 				len++;
 			variable_name = NULL;
 			ft_strext(&variable_name, &line[index], len);
-			if (ft_in_envp(envp, variable_name))
-				ft_strext(&replaced_line, ft_in_envp(envp, variable_name), ft_strlen(ft_in_envp(envp, variable_name)));
+			value = ft_in_envp(envp, variable_name);
+			if (value)
+			{
+				ft_strext(&replaced_line, value, ft_strlen(value));
+				free(value);
+			}
 			start = index + ft_strlen(variable_name);
 			if (line[start] == '}')
 				start++;
 			index = start - 1;
+			free(variable_name);
 		}
 		if (line[index] == '\'')
 		{

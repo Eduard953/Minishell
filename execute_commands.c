@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:18:55 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/31 14:25:13 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	launch_exe(char **arg, char ***in_envp)
 {
 	char	**envp;
 	int		pid;
+	char	*path;
 
 	envp = *in_envp;
 	if (ft_strcmp(arg[0], "echo") == 0)
@@ -41,9 +42,11 @@ int	launch_exe(char **arg, char ***in_envp)
 
 	if (ft_isalpha(arg[0][0]))
 	{
-		arg[0] = find_in_path(arg[0], envp);
-		if (arg[0] == NULL)
+		path = find_in_path(arg[0], envp);
+		if (path == NULL)
 			return (error(127));
+		free(arg[0]);
+		arg[0] = path;
 	}
 	pid = fork();
 	if (!pid)
