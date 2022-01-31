@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:23:09 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 15:23:24 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 14:29:34 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,5 @@ t_instruction *instr_create(char *line, int length, char *in, char *out)
 	instr->in = in;
 	instr->out = out;
 	free(command);
-	printf("Command: %s from %s to %s\n", instr->command, instr->in, instr->out);
 	return (instr);
 }

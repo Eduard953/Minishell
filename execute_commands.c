@@ -6,12 +6,11 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:13:25 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 14:21:40 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <sys/types.h>
 
 int	launch_exe(char **arg, char ***in_envp)
 {
@@ -34,12 +33,11 @@ int	launch_exe(char **arg, char ***in_envp)
 	if (ft_strcmp(arg[0], "pwd") == 0)
 		return (builtint_pwd());
 
-	if (ft_isalpha(arg[0][0])) {
+	if (ft_isalpha(arg[0][0]))
+	{
 		arg[0] = find_in_path(arg[0], envp);
-		if (arg[0] == NULL) {
-			printf("Executable not found in PATH\n");
-			return (127);
-		}
+		if (arg[0] == NULL)
+			return (error(127));
 	}
 	pid = fork();
 	if (!pid)
@@ -80,10 +78,7 @@ int execute_command(t_list *commands, char ***in_envp)
 		}
 		// Input redirections
 		if (ft_strcmp(instr->in, "#stdin") == 0)
-		{
 			fdin = dup(save_stdin);
-			ft_println("STDIN");
-		}
 		else if (ft_strncmp(instr->in, "#text", 5) == 0)
 		{
 			fdin = open("./.mstmp", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
@@ -92,50 +87,34 @@ int execute_command(t_list *commands, char ***in_envp)
 			fdin = open("./.mstmp", O_RDONLY);
 		}
 		else if (ft_strcmp(instr->in, "#pipe") != 0)
-		{
 			fdin = open(instr->in, O_RDONLY);
-			ft_println("FILEIN");
-		}
 		if (fdin < 0)
 		{
-			ft_println("Error Input file could not be opened!");
-			return (1);
+			perror("Pipes");
+			return(1);
 		}
 		dup2(fdin, 0);
 		close(fdin);
 		// Output redirections
 		if (ft_strcmp(instr->out, "#stdout") == 0)
-		{
 			fdout = dup(save_stdout);
-			ft_println("STDOUT");
-		}
 		else if (ft_strcmp(instr->out, "#pipe") == 0)
 		{
 			pipe(fdpipe);
 			fdin = fdpipe[0];
 			fdout = fdpipe[1];
-			ft_println("PIPEOUT");
 		}
 		else if (ft_strncmp(instr->out, "#append", 7) == 0)
-		{
 			fdout = open(instr->out+7, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-			ft_println("APPEND");
-		}
 		else
-		{
 			fdout = open(instr->out, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
-			ft_println("WRITE");
-		}
 		if (fdout < 0)
 		{
-			ft_println("Error Output file could not be opened!");
-			return (1);
+			perror("Pipes");
+			return(1);
 		}
 		dup2(fdout, 1);
 		close(fdout);
-		ft_print("What is here? ");
-		ft_printarr(arg);
-		ft_println("");
 		returncode = launch_exe(arg, &envp);
 		commands = commands->next;
 	}
