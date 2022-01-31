@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 17:02:21 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/28 15:01:36 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ t_list	*find_token(char *line)
 	return (instructions);
 }
 
-char	*replace_var(char *line, char **envp)
+char	*replace_var(char *line, char **envp, int returncode)
 {
 	char	*replaced_line;
 	char	*variable_name;
@@ -193,6 +193,15 @@ char	*replace_var(char *line, char **envp)
 			index++;
 			if (line[index] == '{')
 				index++;
+			if (line[index] == '?')
+			{
+				ft_strext(&replaced_line, ft_itoa(returncode), ft_strlen(ft_itoa(returncode)));
+				start = index + 1;
+				if (line[start] == '}')
+					start++;
+				index = start;
+				continue;
+			}
 			if (ft_isdigit(line[index]))
 			{
 				printf("Illegal variable name\n");
@@ -330,10 +339,12 @@ int	main(int argc, char **argv, char **envp)
 	char	*prompt;
 	char	*replaced_line;
 	t_list	*tokens;
+	int		returncode;
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
 	//ft_printarr(envp);
+	returncode = 0;
 	while (1 && (argc || !argc) && (argv || !argv))
 	{
 		prompt = build_prompt();
@@ -341,10 +352,10 @@ int	main(int argc, char **argv, char **envp)
 		if (!data.line)
 			exit(0);
 		add_history(data.line);
-		replaced_line = replace_var(data.line, envp);
+		replaced_line = replace_var(data.line, envp, returncode);
 		printf("Replaced line: %s\n", replaced_line);
 		tokens = find_token(replaced_line);
-		envp = execute_command(tokens, envp);
+		returncode = execute_command(tokens, &envp);
 		free(tokens);
 		free(data.line);
 		free(prompt);
