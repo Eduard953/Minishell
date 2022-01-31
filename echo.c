@@ -6,19 +6,18 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:15:21 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 15:19:28 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 13:53:41 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void builtin_echo(char **args) 
+int builtin_echo(char **args) 
 {
 	int	argslen;
 	int	newline;
 	int	index;
 
-	printf("Builtin echo\n");
 	argslen = 0;
 	while(args[argslen] != NULL)
 		argslen++;
@@ -40,4 +39,5 @@ void builtin_echo(char **args)
 	}
 	if (newline)
 		printf("\n");
+	return (0);
 }
