@@ -6,18 +6,17 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:16:12 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 16:09:44 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 13:52:17 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void builtin_cd(char **args, char **envp) 
+int builtin_cd(char **args, char **envp) 
 {
 	int	argslen;
 	int	returnval;
 
-	printf("Builtin cd\n");
 	argslen = 0;
 	returnval = -1;
 	while(args[argslen] != NULL)
@@ -29,7 +28,8 @@ void builtin_cd(char **args, char **envp)
 	else if (argslen == 2)
 		returnval = chdir(args[1]);
 	else
-		printf("cd: Too many arguments\n");
+		return (error(7));
 	if (returnval != 0)
-		printf("cd: Error changing directory\n");
+		return (error(5));
+	return(0);
 }

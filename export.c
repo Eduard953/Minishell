@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 15:46:00 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/31 13:57:11 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ char **builtin_export(char **arg, char **envp)
 
 	tokens = ft_split(arg[1], '=');
 	value = ft_in_envp(envp, tokens[0]);
-	ft_print("MAybe here?\n");
 	envplen = 0;
 	while (envp[envplen] != NULL)
 		envplen++;
@@ -38,10 +37,7 @@ char **builtin_export(char **arg, char **envp)
 		i++;
 	}
 	if (!value)
-	{
-		ft_print("value doesn't exist\n");
 		temp[i] = ft_strdup(arg[1]);
-	}
 	return (temp);
 }
 
@@ -63,19 +59,11 @@ char **builtin_unset(char **arg, char **envp)
 	{
 		if (!(ft_strncmp(envp[i], arg[1], ft_strlen(arg[1]))))
 		{
-			ft_print("found var\n");
 			if (envp[i][ft_strlen(arg[1])] == '=')
-			{
-				ft_print("SEG2\n");
 				i++;
-			}
 		}
-		ft_print("SEG3\n");
 		if (envp[i] == NULL)
-		{
-			ft_print("SEG\n");
 			break ;
-		}
 		temp[j] = envp[i];
 		j++;
 		i++;
