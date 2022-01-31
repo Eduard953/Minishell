@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:21:38 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/31 14:48:36 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ int	builtin_export(char **arg, char ***envp)
 	temp = ft_calloc(ft_arrlen(*envp) + 2, sizeof(char *));
 	if (!temp)
 		return (error(5));
-	temp = ft_memcpy(temp, *envp, (sizeof(char *) * ft_arrlen(*envp)));
-	i = ft_arrlen(temp);
-	temp[i] = ft_strdup(arg[1]);
+	temp = ft_memcpy(temp, *envp, ft_arrlen(*envp));
+	temp[ft_arrlen(temp)] = ft_strdup(arg[1]);
 	free(value);
-	ft_arrclear(*envp, free);
+	free(*envp);
 	ft_arrclear(tokens, free);
 	*envp = temp;
+	ft_println("Replaced ENVP");
 	return (0);
 }
 
@@ -78,5 +78,6 @@ char **builtin_unset(char **arg, char **envp)
 		j++;
 		i++;
 	}
+	free(envp);
 	return (temp);
 }

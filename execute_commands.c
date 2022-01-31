@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:25:13 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/01/31 14:46:27 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ int	launch_exe(char **arg, char ***in_envp)
 	{
 		path = find_in_path(arg[0], envp);
 		if (path == NULL)
-			return (error(127));
+		{
+			ft_putstr_fd("Command not Found\n", 2);
+			return (127);
+		}
 		free(arg[0]);
 		arg[0] = path;
 	}
