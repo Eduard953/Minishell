@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_arrclear_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
+/*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/23 15:17:30 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 12:44:20 by pstengl          ###   ########.fr       */
+/*   Created: 2022/01/31 12:58:57 by pstengl           #+#    #+#             */
+/*   Updated: 2022/01/31 14:02:10 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
+#include <stdlib.h>
 
-void	advance(char *line, int *index, int *start)
+void	ft_arrclear(char **arr, void (*f)(void *content))
 {
-	if (line[*index] == '\0')
+	int	index;
+
+	index = 0;
+	while (arr[index])
 	{
-		(*index)--;
-		*start = (*index) + 1;
-		return;
+		f(arr[index]);
+		arr[index] = NULL;
+		index++;
 	}
-	*start = (*index) + 1;
-	while (line[*start] == ' ')
-		(*start)++;
-	*index = (*start) - 1;
+	free(arr);
+	arr = NULL;
 }

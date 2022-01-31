@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:15:34 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 14:18:12 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_instruction *instr_create(char *line, int length, char *in, char *out);
 char	*build_prompt();
 char	*ft_in_envp(char **envp, char *variable);
 char	*replace_var(char *line, char **envp, int returncode);
-char **builtin_export(char **arg, char **envp);
+int		builtin_export(char **arg, char ***envp);
 char	*find_in_path(char *exec_name, char **envp);
 char **replace_arg(char *line);
 char **builtin_unset(char **arg, char **envp);

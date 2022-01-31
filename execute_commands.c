@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:21:40 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 14:18:55 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,19 @@ int	launch_exe(char **arg, char ***in_envp)
 	if (ft_strcmp(arg[0], "cd") == 0)
 		return (builtin_cd(arg, &envp));
 	if (ft_strcmp(arg[0], "exit") == 0)
+	{
 		builtin_exit();
+		return (0);
+	}
 	if (ft_strcmp(arg[0], "env") == 0)
 		return (builtin_env(envp));
 	if (ft_strcmp(arg[0], "export") == 0)
-		envp = builtin_export(arg, envp);
+		return (builtin_export(arg, &envp));
 	if (ft_strcmp(arg[0], "unset") == 0)
+	{
 		envp = builtin_unset(arg, envp);
+		return (0);
+	}
 	if (ft_strcmp(arg[0], "pwd") == 0)
 		return (builtint_pwd());
 
@@ -43,7 +49,6 @@ int	launch_exe(char **arg, char ***in_envp)
 	if (!pid)
 	{
 		execve(arg[0], arg, envp);
-		free(arg);
 		perror("execve");
 		exit(1);
 	}
@@ -91,6 +96,7 @@ int execute_command(t_list *commands, char ***in_envp)
 		if (fdin < 0)
 		{
 			perror("Pipes");
+			ft_arrclear(arg, free);
 			return(1);
 		}
 		dup2(fdin, 0);
@@ -111,11 +117,13 @@ int execute_command(t_list *commands, char ***in_envp)
 		if (fdout < 0)
 		{
 			perror("Pipes");
+			ft_arrclear(arg, free);
 			return(1);
 		}
 		dup2(fdout, 1);
 		close(fdout);
 		returncode = launch_exe(arg, &envp);
+		ft_arrclear(arg, free);
 		commands = commands->next;
 	}
 	dup2(save_stdin, 0);

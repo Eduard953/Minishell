@@ -6,39 +6,49 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 13:57:11 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 14:21:38 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char **builtin_export(char **arg, char **envp)
+int	builtin_export(char **arg, char ***envp)
 {
 	char **temp;
 	char **tokens;
 	char *value;
-	int envplen;
 	int i;
 
 
 	tokens = ft_split(arg[1], '=');
-	value = ft_in_envp(envp, tokens[0]);
-	envplen = 0;
-	while (envp[envplen] != NULL)
-		envplen++;
-	temp = ft_calloc(sizeof(char *), (envplen + 2));
-	i = 0;
-	while (envp[i] != NULL)
+	value = ft_in_envp(*envp, tokens[0]);
+	if (value)
 	{
-		if (!(ft_strncmp(envp[i], arg[1], ft_strlen(tokens[0]) + 1)))
-			temp[i] = ft_strdup(arg[1]);
-		else
-			temp[i] = envp[i];
-		i++;
+		i = 0;
+		while ((*envp)[i] != NULL)
+		{
+			if (ft_strncmp((*envp)[i], arg[1], ft_strlen(tokens[0]) + 1) == 0)
+			{
+				free((*envp)[i]);
+				(*envp)[i] = ft_strdup(arg[1]);
+			}
+			i++;
+		}
+		free(value);
+		ft_arrclear(tokens, free);
+		return (0);
 	}
-	if (!value)
-		temp[i] = ft_strdup(arg[1]);
-	return (temp);
+	temp = ft_calloc(ft_arrlen(*envp) + 2, sizeof(char *));
+	if (!temp)
+		return (error(5));
+	temp = ft_memcpy(temp, *envp, (sizeof(char *) * ft_arrlen(*envp)));
+	i = ft_arrlen(temp);
+	temp[i] = ft_strdup(arg[1]);
+	free(value);
+	ft_arrclear(*envp, free);
+	ft_arrclear(tokens, free);
+	*envp = temp;
+	return (0);
 }
 
 char **builtin_unset(char **arg, char **envp)

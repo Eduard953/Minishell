@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_arrlen_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
+/*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/23 15:17:30 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 12:44:20 by pstengl          ###   ########.fr       */
+/*   Created: 2022/01/31 13:06:32 by pstengl           #+#    #+#             */
+/*   Updated: 2022/01/31 13:07:29 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	advance(char *line, int *index, int *start)
+size_t	ft_arrlen(char **arr)
 {
-	if (line[*index] == '\0')
-	{
-		(*index)--;
-		*start = (*index) + 1;
-		return;
-	}
-	*start = (*index) + 1;
-	while (line[*start] == ' ')
-		(*start)++;
-	*index = (*start) - 1;
+	size_t	len;
+
+	len = 0;
+	if (!arr)
+		return (len);
+	while(arr[len])
+		len++;
+	return (len);
 }

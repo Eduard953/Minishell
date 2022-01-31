@@ -6,13 +6,13 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:15:21 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 13:53:41 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 12:42:48 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_echo(char **args) 
+int builtin_echo(char **args)
 {
 	int	argslen;
 	int	newline;

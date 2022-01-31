@@ -6,11 +6,20 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:28:58 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/01/31 13:58:09 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void del(void *content)
+{
+	t_instruction *instr;
+
+	instr = (t_instruction *)content;
+	free(instr->command);
+	free(instr);
+}
 
 char	*ft_in_envp(char **envp, char *variable)
 {
@@ -89,7 +98,7 @@ t_list	*find_token(char *line)
 				index++;
 				start++;
 				instr->in = ft_strdup("#text");
-				while (1) 
+				while (1)
 				{
 					text = readline("");
 					if (!text || ft_strcmp(text, find_filename(&line[start])) == 0){
@@ -183,7 +192,7 @@ char	*replace_var(char *line, char **envp, int returncode)
 
 	start = 0;
 	index = 0;
-	replaced_line = NULL;
+	replaced_line = ft_strdup("");
 	while (line[index] != '\0')
 	{
 		if (line[index] == '$')
@@ -204,7 +213,8 @@ char	*replace_var(char *line, char **envp, int returncode)
 			if (ft_isdigit(line[index]))
 			{
 				ft_putstr_fd("Illegal variable name\n", 2);
-				return ("");
+				free(replaced_line);
+				return (ft_strdup(""));
 			}
 			len = 0;
 			while (line[index+len] != '\0' && (ft_isalnum(line[index+len]) || line[index+len] == '_')) //TODO: underscores and stuff
@@ -226,7 +236,8 @@ char	*replace_var(char *line, char **envp, int returncode)
 			if (line[index] == '\0')
 			{
 				ft_putstr_fd("Syntax error: Unclosed quotes\n", 2);
-				return ("");
+				free(replaced_line);
+				return (ft_strdup(""));
 			}
 			ft_strext(&replaced_line, &line[start], (index-start+1));
 			start = index + 1;
@@ -244,6 +255,7 @@ char **replace_arg(char *line)
 	int		index;
 	t_list	*arg_arr;
 	char	quote;
+	char	**output;
 
 	start = 0;
 	index = 0;
@@ -260,6 +272,7 @@ char **replace_arg(char *line)
 			if (line[index] == '\0')
 			{
 				ft_putstr_fd("Syntax error: Unclosed quotes\n", 2);
+				ft_lstclear(&arg_arr, free);
 				return (NULL);
 			}
 			start++;
@@ -282,7 +295,9 @@ char **replace_arg(char *line)
 		if (ft_strcmp(replaced_arg, ""))
 			ft_lstadd(&arg_arr, replaced_arg);
 	}
-	return (ft_lsttoarr(arg_arr));
+	output = ft_lsttoarr(arg_arr);
+	ft_lstclear(&arg_arr, free);
+	return (output);
 }
 
 char	*find_in_path(char *exec_name, char **envp) {
@@ -291,9 +306,14 @@ char	*find_in_path(char *exec_name, char **envp) {
 	DIR		*dir;
 	struct dirent	*dirinfo;
 	char	*full_path;
+	char	*value;
 
 	full_path = NULL;
-	paths = ft_split(ft_in_envp(envp, "PATH"), ':');
+	value = ft_in_envp(envp, "PATH");
+	if (!value)
+		return (full_path);
+	paths = ft_split(value, ':');
+	free(value);
 	if (!paths)
 		return (full_path);
 	index = 0;
@@ -317,25 +337,26 @@ char	*find_in_path(char *exec_name, char **envp) {
 				break ;
 		}
 		closedir(dir);
-		free(paths[index]);
 		index++;
 	}
-	free(paths);
+	ft_arrclear(paths, free);
 	return (full_path);
 }
 
-int	main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **input_envp)
 {
 	t_data	data;
 	char	*prompt;
 	char	*replaced_line;
 	t_list	*tokens;
 	int		returncode;
+	char	**envp;
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
 	//ft_printarr(envp);
 	returncode = 0;
+	envp = ft_arrdup(input_envp);
 	while (1 && (argc || !argc) && (argv || !argv))
 	{
 		prompt = build_prompt();
@@ -345,10 +366,13 @@ int	main(int argc, char **argv, char **envp)
 		add_history(data.line);
 		replaced_line = replace_var(data.line, envp, returncode);
 		tokens = find_token(replaced_line);
+		free(replaced_line);
 		returncode = execute_command(tokens, &envp);
-		free(tokens);
+		ft_lstclear(&tokens, del);
 		free(data.line);
 		free(prompt);
 	}
+	ft_println("END");
+	ft_arrclear(envp, free);
 	return (0);
 }

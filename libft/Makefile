@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Werror -Wextra
+CFLAGS=-Wall -Werror -Wextra -g
 LDFLAGS=
 LDLIBS=
 AR=ar
@@ -25,7 +25,8 @@ BONUS_SRC=ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c\
 		  ft_printintbase_bonus.c ft_println_bonus.c ft_printarr_bonus.c\
 		  ft_isspace_bonus.c ft_isoneof_bonus.c ft_strext_bonus.c ft_max_bonus.c\
 		  ft_min_bonus.c ft_abs_bonus.c ft_printuint_bonus.c ft_uitobase_bonus.c\
-		  ft_strcmp_bonus.c ft_lsttoarr.c
+		  ft_strcmp_bonus.c ft_lsttoarr.c ft_arrclear_bonus.c ft_arrlen_bonus.c\
+		  ft_arrdup_bonus.c
 
 OBJ=${SRC:.c=.o}
 BONUS_OBJ=${BONUS_SRC:.c=.o}
