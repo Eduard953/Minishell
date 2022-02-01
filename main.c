@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:31:48 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/01 17:11:48 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,7 +368,7 @@ int	main(int argc, char **argv, char **input_envp)
 		prompt = build_prompt();
 		data.line = readline(prompt);
 		if (!data.line)
-			exit(0);
+			break;
 		add_history(data.line);
 		replaced_line = replace_var(data.line, envp, returncode);
 		tokens = find_token(replaced_line);
@@ -378,7 +378,7 @@ int	main(int argc, char **argv, char **input_envp)
 		free(data.line);
 		free(prompt);
 	}
-	ft_println("END");
 	ft_arrclear(envp, free);
+	free(prompt);
 	return (0);
 }

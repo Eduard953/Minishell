@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/01 17:05:24 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/01 17:11:58 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	builtin_export(char **arg, char ***envp)
 	free(*envp);
 	ft_arrclear(tokens, free);
 	*envp = temp;
-	ft_println("Replaced ENVP");
 	return (0);
 }
 
