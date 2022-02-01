@@ -6,35 +6,33 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:46:27 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/01 17:03:56 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	launch_exe(char **arg, char ***in_envp)
+int	launch_exe(char **arg, char ***envp)
 {
-	char	**envp;
 	int		pid;
 	char	*path;
 
-	envp = *in_envp;
 	if (ft_strcmp(arg[0], "echo") == 0)
 		return (builtin_echo(arg));
 	if (ft_strcmp(arg[0], "cd") == 0)
-		return (builtin_cd(arg, &envp));
+		return (builtin_cd(arg, envp));
 	if (ft_strcmp(arg[0], "exit") == 0)
 	{
 		builtin_exit();
 		return (0);
 	}
 	if (ft_strcmp(arg[0], "env") == 0)
-		return (builtin_env(envp));
+		return (builtin_env((*envp)));
 	if (ft_strcmp(arg[0], "export") == 0)
-		return (builtin_export(arg, &envp));
+		return (builtin_export(arg, envp));
 	if (ft_strcmp(arg[0], "unset") == 0)
 	{
-		envp = builtin_unset(arg, envp);
+		(*envp) = builtin_unset(arg, (*envp));
 		return (0);
 	}
 	if (ft_strcmp(arg[0], "pwd") == 0)
@@ -42,7 +40,7 @@ int	launch_exe(char **arg, char ***in_envp)
 
 	if (ft_isalpha(arg[0][0]))
 	{
-		path = find_in_path(arg[0], envp);
+		path = find_in_path(arg[0], (*envp));
 		if (path == NULL)
 		{
 			ft_putstr_fd("Command not Found\n", 2);
@@ -54,7 +52,7 @@ int	launch_exe(char **arg, char ***in_envp)
 	pid = fork();
 	if (!pid)
 	{
-		execve(arg[0], arg, envp);
+		execve(arg[0], arg, (*envp));
 		perror("execve");
 		exit(1);
 	}
@@ -62,11 +60,10 @@ int	launch_exe(char **arg, char ***in_envp)
 	return (0);
 }
 
-int execute_command(t_list *commands, char ***in_envp)
+int execute_command(t_list *commands, char ***envp)
 {
 	t_instruction *instr;
 	char	**arg;
-	char	**envp;
 	int		save_stdin;
 	int		save_stdout;
 	int		fdin;
@@ -76,8 +73,6 @@ int execute_command(t_list *commands, char ***in_envp)
 
 	save_stdin = dup(0);
 	save_stdout = dup(1);
-	envp = *in_envp;
-
 	while(commands)
 	{
 		instr = commands->content;
@@ -128,7 +123,7 @@ int execute_command(t_list *commands, char ***in_envp)
 		}
 		dup2(fdout, 1);
 		close(fdout);
-		returncode = launch_exe(arg, &envp);
+		returncode = launch_exe(arg, envp);
 		ft_arrclear(arg, free);
 		commands = commands->next;
 	}
@@ -137,6 +132,5 @@ int execute_command(t_list *commands, char ***in_envp)
 	close(save_stdin);
 	close(save_stdout);
 	unlink("./.mstmp");
-	*in_envp = envp;
 	return(returncode);
 }

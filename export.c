@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 14:48:36 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/01 17:05:24 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	builtin_export(char **arg, char ***envp)
 	temp = ft_calloc(ft_arrlen(*envp) + 2, sizeof(char *));
 	if (!temp)
 		return (error(5));
-	temp = ft_memcpy(temp, *envp, ft_arrlen(*envp));
+	temp = ft_memcpy(temp, *envp, sizeof(char *) * ft_arrlen(*envp));
 	temp[ft_arrlen(temp)] = ft_strdup(arg[1]);
 	free(value);
 	free(*envp);
