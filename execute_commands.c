@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/01 17:03:56 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/06 16:02:24 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	launch_exe(char **arg, char ***envp)
 	}
 	if (ft_strcmp(arg[0], "pwd") == 0)
 		return (builtint_pwd());
-
 	if (ft_isalpha(arg[0][0]))
 	{
 		path = find_in_path(arg[0], (*envp));
@@ -60,35 +59,34 @@ int	launch_exe(char **arg, char ***envp)
 	return (0);
 }
 
-int execute_command(t_list *commands, char ***envp)
+int	execute_command(t_list *commands, char ***envp)
 {
-	t_instruction *instr;
-	char	**arg;
-	int		save_stdin;
-	int		save_stdout;
-	int		fdin;
-	int		fdout;
-	int		fdpipe[2];
-	int		returncode;
+	t_instruction	*instr;
+	char			**arg;
+	int				save_stdin;
+	int				save_stdout;
+	int				fdin;
+	int				fdout;
+	int				fdpipe[2];
+	int				returncode;
 
 	save_stdin = dup(0);
 	save_stdout = dup(1);
-	while(commands)
+	while (commands)
 	{
 		instr = commands->content;
 		arg = replace_arg(instr->command);
 		if (!arg)
 		{
 			commands = commands->next;
-			continue;
+			continue ;
 		}
-		// Input redirections
 		if (ft_strcmp(instr->in, "#stdin") == 0)
 			fdin = dup(save_stdin);
 		else if (ft_strncmp(instr->in, "#text", 5) == 0)
 		{
 			fdin = open("./.mstmp", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
-			write(fdin, instr->in+5, ft_strlen(instr->in)-5);
+			write(fdin, instr->in + 5, ft_strlen(instr->in) - 5);
 			close(fdin);
 			fdin = open("./.mstmp", O_RDONLY);
 		}
@@ -98,11 +96,10 @@ int execute_command(t_list *commands, char ***envp)
 		{
 			perror("Pipes");
 			ft_arrclear(arg, free);
-			return(1);
+			return (1);
 		}
 		dup2(fdin, 0);
 		close(fdin);
-		// Output redirections
 		if (ft_strcmp(instr->out, "#stdout") == 0)
 			fdout = dup(save_stdout);
 		else if (ft_strcmp(instr->out, "#pipe") == 0)
@@ -112,14 +109,14 @@ int execute_command(t_list *commands, char ***envp)
 			fdout = fdpipe[1];
 		}
 		else if (ft_strncmp(instr->out, "#append", 7) == 0)
-			fdout = open(instr->out+7, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+			fdout = open(instr->out + 7, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
 		else
 			fdout = open(instr->out, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 		if (fdout < 0)
 		{
 			perror("Pipes");
 			ft_arrclear(arg, free);
-			return(1);
+			return (1);
 		}
 		dup2(fdout, 1);
 		close(fdout);
@@ -132,5 +129,5 @@ int execute_command(t_list *commands, char ***envp)
 	close(save_stdin);
 	close(save_stdout);
 	unlink("./.mstmp");
-	return(returncode);
+	return (returncode);
 }

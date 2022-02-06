@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:17:30 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/31 12:44:20 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/06 15:22:54 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	advance(char *line, int *index, int *start)
 	{
 		(*index)--;
 		*start = (*index) + 1;
-		return;
+		return ;
 	}
 	*start = (*index) + 1;
 	while (line[*start] == ' ')
