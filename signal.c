@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:20:17 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/01/23 15:20:32 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/06 15:22:33 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,6 @@ void	sig_handler(int signum)
 		printf("\n");
 		rl_on_new_line();
 		rl_redisplay();
-		return;
+		return ;
 	}
 }

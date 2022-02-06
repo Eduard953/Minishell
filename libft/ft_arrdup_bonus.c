@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_arrdup_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
+/*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 13:06:03 by pstengl           #+#    #+#             */
-/*   Updated: 2022/01/31 13:09:09 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/06 15:16:14 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,5 @@ char	**ft_arrdup(char **in_arr)
 		new_arr[index] = ft_strdup(in_arr[index]);
 		index++;
 	}
-	return new_arr;
+	return (new_arr);
 }

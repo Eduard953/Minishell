@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_arrlen_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
+/*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 13:06:32 by pstengl           #+#    #+#             */
-/*   Updated: 2022/01/31 13:07:29 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/06 15:16:35 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ size_t	ft_arrlen(char **arr)
 	len = 0;
 	if (!arr)
 		return (len);
-	while(arr[len])
+	while (arr[len])
 		len++;
 	return (len);
 }

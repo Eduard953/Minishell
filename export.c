@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/01 17:11:58 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/06 15:42:59 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 int	builtin_export(char **arg, char ***envp)
 {
-	char **temp;
-	char **tokens;
-	char *value;
-	int i;
-
+	char	**temp;
+	char	**tokens;
+	char	*value;
+	int		i;
 
 	tokens = ft_split(arg[1], '=');
 	value = ft_in_envp(*envp, tokens[0]);
@@ -50,13 +49,12 @@ int	builtin_export(char **arg, char ***envp)
 	return (0);
 }
 
-char **builtin_unset(char **arg, char **envp)
+char	**builtin_unset(char **arg, char **envp)
 {
-	char **temp;
-
-	int envplen;
-	int i;
-	int j;
+	char	**temp;
+	int		envplen;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
