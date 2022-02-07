@@ -21,7 +21,6 @@ sudo apt install readline-common libreadline-dev
 - Finish exit.c
 - Fix redirection pipes
 - Fix ec"ho" behaviour
-- do nothing when "export variable" (without =)
 - export multiple variables at once
 - add exitcode to exit()
 - check variable naming
