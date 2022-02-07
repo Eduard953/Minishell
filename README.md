@@ -21,3 +21,4 @@ sudo apt install readline-common libreadline-dev
 - Finish exit.c
 - Fix redirection pipes
 - Fix ec"ho" behaviour
+- do something like env if export with no functions;
