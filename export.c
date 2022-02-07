@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/06 15:42:59 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/07 14:09:12 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int	builtin_export(char **arg, char ***envp)
 	char	*value;
 	int		i;
 
+	if (!(ft_strchr(arg[1], '=')))
+		return (0);
 	tokens = ft_split(arg[1], '=');
 	value = ft_in_envp(*envp, tokens[0]);
 	if (value)
