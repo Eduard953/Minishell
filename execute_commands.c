@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/06 16:02:24 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/07 14:31:03 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	launch_exe(char **arg, char ***envp)
 		return (builtin_cd(arg, envp));
 	if (ft_strcmp(arg[0], "exit") == 0)
 	{
-		builtin_exit();
+		builtin_exit(arg);
 		return (0);
 	}
 	if (ft_strcmp(arg[0], "env") == 0)

@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/06 15:27:36 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/07 14:30:55 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int				builtin_echo(char **args);
 void			advance(char *line, int *index, int *start);
 void			sig_handler(int signum);
 int				builtin_env(char **envp);
-void			builtin_exit(void);
+int				builtin_exit(char **args);
 t_instruction	*instr_create(char *line, int length, char *in, char *out);
 char			*build_prompt(void);
 char			*ft_in_envp(char **envp, char *variable);
