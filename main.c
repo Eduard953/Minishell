@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/06 14:38:17 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/11 18:18:11 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,47 +139,49 @@ char	**replace_arg(char *line)
 	t_list	*arg_arr;
 	char	quote;
 	char	**output;
+	int		is_quoted;
 
 	start = 0;
 	index = 0;
 	arg_arr = NULL;
 	replaced_arg = NULL;
-	while (line[index] != '\0')
+	is_quoted = 0;
+	while (1)
 	{
-		if (line[index] == '\'' || line[index] == '\"')
+		if (((line[index] == '\'' || line[index] == '\"') && !is_quoted) || (line[index] == quote && is_quoted))
 		{
+			replaced_arg = ft_strext(&replaced_arg, &line[start], (index-start));
 			quote = line[index];
-			index++;
-			while (!(line[index] == quote || line[index] == '\0'))
-				index++;
-			if (line[index] == '\0')
-			{
-				ft_putstr_fd("Syntax error: Unclosed quotes\n", 2);
+			is_quoted = !is_quoted;
+			start = index + 1;
+		}
+		if (line[index] == ' ' && !is_quoted)
+		{
+			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
+			if (ft_strcmp(replaced_arg, "") != 0) {
+				ft_lstadd(&arg_arr, replaced_arg);
+				replaced_arg = NULL;
+			}
+			advance(line, &index, &start);
+		}
+		if (line[index] == '\0') {
+			if (is_quoted) {
+				ft_putstr_fd("Error: Unclosed quotes", 2);
+				if (replaced_arg)
+					free(replaced_arg);
 				ft_lstclear(&arg_arr, free);
 				return (NULL);
 			}
-			start++;
-			replaced_arg = ft_substr(line, start, (index - start));
-			if (ft_strcmp(replaced_arg, ""))
+			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
+			if (ft_strcmp(replaced_arg, "") != 0) {
 				ft_lstadd(&arg_arr, replaced_arg);
-			index++;
-			advance(line, &index, &start);
-		}
-		if (line[index] == ' ')
-		{
-			replaced_arg = ft_substr(line, start, (index - start));
-			if (ft_strcmp(replaced_arg, ""))
-				ft_lstadd(&arg_arr, replaced_arg);
-			advance(line, &index, &start);
+				replaced_arg = NULL;
+			}
+			break;
 		}
 		index++;
 	}
-	if (index - start > 0)
-	{
-		replaced_arg = ft_substr(line, start, (index - start));
-		if (ft_strcmp(replaced_arg, ""))
-			ft_lstadd(&arg_arr, replaced_arg);
-	}
+	ft_printlst(arg_arr);
 	output = ft_lsttoarr(arg_arr);
 	ft_lstclear(&arg_arr, free);
 	return (output);
