@@ -6,13 +6,13 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 13:03:08 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/07 15:39:12 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/14 13:34:36 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	redirection_left(char *in, char *line, int length, t_list *instructions)
+int	red_left(char *in, char *line, int length, t_list *instructions)
 {
 	t_instruction	*instr;
 
@@ -41,7 +41,7 @@ int	redirection_left(char *in, char *line, int length, t_list *instructions)
 	return (ft_strlen(find_fname(line)));
 }
 
-int	redirection_right(char *in, char *line, int length, t_list *instructions)
+int	red_right(char *in, char *line, int length, t_list *instructions)
 {
 	t_instruction	*instr;
 
@@ -80,12 +80,12 @@ t_list	*find_token(char *line)
 	{
 		if (line[index] == '<')
 		{
-			index += redirection_left(in, &line[start], (index - start), instructions);
+			index += red_left(in, &line[start], (index - start), instructions);
 			start = index + 1;
 		}
 		if (line[index] == '>')
 		{
-			index += redirection_right(in, &line[start], (index - start), instructions);
+			index += red_right(in, &line[start], (index - start), instructions);
 			start = index + 1;
 		}
 		if (line[index] == '|')

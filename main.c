@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/11 18:18:11 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/14 13:33:09 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*find_fname(char *line)
 
 char	*replace_var(char *line, char **envp, int returncode)
 {
-	char	*replaced_line;
+	char	*rep_line;
 	char	*variable_name;
 	char	*value;
 	int		start;
@@ -70,18 +70,18 @@ char	*replace_var(char *line, char **envp, int returncode)
 
 	start = 0;
 	index = 0;
-	replaced_line = ft_strdup("");
+	rep_line = ft_strdup("");
 	while (line[index] != '\0')
 	{
 		if (line[index] == '$')
 		{
-			ft_strext(&replaced_line, &line[start], (index - start));
+			ft_strext(&rep_line, &line[start], (index - start));
 			index++;
 			if (line[index] == '{')
 				index++;
 			if (line[index] == '?')
 			{
-				ft_strext(&replaced_line, ft_itoa(returncode), ft_strlen(ft_itoa(returncode)));
+				ft_strext(&rep_line, ft_itoa(returncode), ft_strlen(ft_itoa(returncode)));
 				start = index + 1;
 				if (line[start] == '}')
 					start++;
@@ -91,7 +91,7 @@ char	*replace_var(char *line, char **envp, int returncode)
 			if (ft_isdigit(line[index]))
 			{
 				ft_putstr_fd("Illegal variable name\n", 2);
-				free(replaced_line);
+				free(rep_line);
 				return (ft_strdup(""));
 			}
 			len = 0;
@@ -102,7 +102,7 @@ char	*replace_var(char *line, char **envp, int returncode)
 			value = ft_in_envp(envp, variable_name);
 			if (value)
 			{
-				ft_strext(&replaced_line, value, ft_strlen(value));
+				ft_strext(&rep_line, value, ft_strlen(value));
 				free(value);
 			}
 			start = index + ft_strlen(variable_name);
@@ -119,16 +119,16 @@ char	*replace_var(char *line, char **envp, int returncode)
 			if (line[index] == '\0')
 			{
 				ft_putstr_fd("Syntax error: Unclosed quotes\n", 2);
-				free(replaced_line);
+				free(rep_line);
 				return (ft_strdup(""));
 			}
-			ft_strext(&replaced_line, &line[start], (index - start + 1));
+			ft_strext(&rep_line, &line[start], (index - start + 1));
 			start = index + 1;
 		}
 		index++;
 	}
-	ft_strext(&replaced_line, &line[start], (index - start));
-	return (replaced_line);
+	ft_strext(&rep_line, &line[start], (index - start));
+	return (rep_line);
 }
 
 char	**replace_arg(char *line)
@@ -150,7 +150,7 @@ char	**replace_arg(char *line)
 	{
 		if (((line[index] == '\'' || line[index] == '\"') && !is_quoted) || (line[index] == quote && is_quoted))
 		{
-			replaced_arg = ft_strext(&replaced_arg, &line[start], (index-start));
+			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
 			quote = line[index];
 			is_quoted = !is_quoted;
 			start = index + 1;
@@ -158,14 +158,17 @@ char	**replace_arg(char *line)
 		if (line[index] == ' ' && !is_quoted)
 		{
 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
-			if (ft_strcmp(replaced_arg, "") != 0) {
+			if (ft_strcmp(replaced_arg, "") != 0)
+			{
 				ft_lstadd(&arg_arr, replaced_arg);
 				replaced_arg = NULL;
 			}
 			advance(line, &index, &start);
 		}
-		if (line[index] == '\0') {
-			if (is_quoted) {
+		if (line[index] == '\0')
+		{
+			if (is_quoted)
+			{
 				ft_putstr_fd("Error: Unclosed quotes", 2);
 				if (replaced_arg)
 					free(replaced_arg);
@@ -173,11 +176,12 @@ char	**replace_arg(char *line)
 				return (NULL);
 			}
 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
-			if (ft_strcmp(replaced_arg, "") != 0) {
+			if (ft_strcmp(replaced_arg, "") != 0)
+			{
 				ft_lstadd(&arg_arr, replaced_arg);
 				replaced_arg = NULL;
 			}
-			break;
+			break ;
 		}
 		index++;
 	}
@@ -236,7 +240,7 @@ int	main(int argc, char **argv, char **input_envp)
 {
 	t_data	data;
 	char	*prompt;
-	char	*replaced_line;
+	char	*rep_line;
 	t_list	*tokens;
 	int		returncode;
 	char	**envp;
@@ -252,9 +256,9 @@ int	main(int argc, char **argv, char **input_envp)
 		if (!data.line)
 			break ;
 		add_history(data.line);
-		replaced_line = replace_var(data.line, envp, returncode);
-		tokens = find_token(replaced_line);
-		free(replaced_line);
+		rep_line = replace_var(data.line, envp, returncode);
+		tokens = find_token(rep_line);
+		free(rep_line);
 		returncode = execute_command(tokens, &envp);
 		ft_lstclear(&tokens, del);
 		free(data.line);
