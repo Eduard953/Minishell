@@ -6,13 +6,13 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/07 14:31:03 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/14 15:40:32 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	launch_exe(char **arg, char ***envp)
+int	launch_exe(char **arg, char ***envp, int returncode)
 {
 	int		pid;
 	char	*path;
@@ -22,10 +22,7 @@ int	launch_exe(char **arg, char ***envp)
 	if (ft_strcmp(arg[0], "cd") == 0)
 		return (builtin_cd(arg, envp));
 	if (ft_strcmp(arg[0], "exit") == 0)
-	{
-		builtin_exit(arg);
-		return (0);
-	}
+		return (builtin_exit(arg, returncode));
 	if (ft_strcmp(arg[0], "env") == 0)
 		return (builtin_env((*envp)));
 	if (ft_strcmp(arg[0], "export") == 0)
@@ -55,8 +52,10 @@ int	launch_exe(char **arg, char ***envp)
 		perror("execve");
 		exit(1);
 	}
-	waitpid(pid, NULL, 0);
-	return (0);
+	waitpid(pid, &returncode, 0);
+	// if (WIFEXITED(pid))
+	// 	returncode = WEXITSTATUS(pid);
+	return (returncode);
 }
 
 int	execute_command(t_list *commands, char ***envp)
@@ -120,7 +119,7 @@ int	execute_command(t_list *commands, char ***envp)
 		}
 		dup2(fdout, 1);
 		close(fdout);
-		returncode = launch_exe(arg, envp);
+		returncode = launch_exe(arg, envp, returncode);
 		ft_arrclear(arg, free);
 		commands = commands->next;
 	}
