@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/14 15:16:42 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:17:10 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_instruction
 	char	*text;
 }	t_instruction;
 
-int				execute_command(t_list *commands, char ***in_envp);
+int				execute_command(t_list *commands, char ***envp, int returncode);
 int				builtin_cd(char **args, char ***envp);
 int				builtin_echo(char **args);
 void			advance(char *line, int *index, int *start);

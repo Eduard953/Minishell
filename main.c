@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/14 13:33:09 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:22:00 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,11 @@ char	*replace_var(char *line, char **envp, int returncode)
 				index++;
 			if (line[index] == '?')
 			{
-				ft_strext(&rep_line, ft_itoa(returncode), ft_strlen(ft_itoa(returncode)));
+				value = ft_itoa(returncode);
+				if (value) {
+					ft_strext(&rep_line, value, ft_strlen(value));
+					free(value);
+				}
 				start = index + 1;
 				if (line[start] == '}')
 					start++;
@@ -146,6 +150,7 @@ char	**replace_arg(char *line)
 	arg_arr = NULL;
 	replaced_arg = NULL;
 	is_quoted = 0;
+	quote = '"';
 	while (1)
 	{
 		if (((line[index] == '\'' || line[index] == '\"') && !is_quoted) || (line[index] == quote && is_quoted))
@@ -185,7 +190,6 @@ char	**replace_arg(char *line)
 		}
 		index++;
 	}
-	ft_printlst(arg_arr);
 	output = ft_lsttoarr(arg_arr);
 	ft_lstclear(&arg_arr, free);
 	return (output);
@@ -259,7 +263,7 @@ int	main(int argc, char **argv, char **input_envp)
 		rep_line = replace_var(data.line, envp, returncode);
 		tokens = find_token(rep_line);
 		free(rep_line);
-		returncode = execute_command(tokens, &envp);
+		returncode = execute_command(tokens, &envp, returncode);
 		ft_lstclear(&tokens, del);
 		free(data.line);
 		free(prompt);

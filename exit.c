@@ -6,11 +6,12 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:21:22 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/14 16:06:49 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:38:03 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdlib.h>
 
 int	ft_isnumber(char *num)
 {
@@ -46,7 +47,10 @@ int	builtin_exit(char **args, int returncode)
 	if (check_arg(args))
 		return (check_arg(args));
 	if (ft_arrlen(args) == 2)
+	{
 		returncode = ft_atoi(args[1]) % 256;
+		printf("here %d\n", returncode);
+	}
 	//clean(); // Free all memory?
 	exit(returncode);
 }
