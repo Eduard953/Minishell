@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/14 15:40:32 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:22:12 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,14 @@ int	launch_exe(char **arg, char ***envp, int returncode)
 		exit(1);
 	}
 	waitpid(pid, &returncode, 0);
-	// if (WIFEXITED(pid))
-	// 	returncode = WEXITSTATUS(pid);
+	if (WIFEXITED(returncode))
+	 	returncode = WEXITSTATUS(returncode);
+	else
+		returncode = 0;
 	return (returncode);
 }
 
-int	execute_command(t_list *commands, char ***envp)
+int	execute_command(t_list *commands, char ***envp, int returncode)
 {
 	t_instruction	*instr;
 	char			**arg;
@@ -67,7 +69,6 @@ int	execute_command(t_list *commands, char ***envp)
 	int				fdin;
 	int				fdout;
 	int				fdpipe[2];
-	int				returncode;
 
 	save_stdin = dup(0);
 	save_stdout = dup(1);
