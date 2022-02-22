@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:21:22 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/15 14:08:00 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/22 12:11:01 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@ int	ft_isnumber(char *num)
 	return (1);
 }
 
-int check_arg(char **args)
+int	check_arg(char **args)
 {
 	int	i;
 
 	i = 1;
 	if (ft_arrlen(args) > 2)
-		return(error(1)); // need the right errorcodes
+		return (error(1)); // need the right errorcodes
 	while (args[i])
 	{
 		if (!ft_isnumber(args[i]))
-			return(error(127)); // need the right errorcodes
+			return (error(127)); // need the right errorcodes
 		i++;
 	}
 	return (0);

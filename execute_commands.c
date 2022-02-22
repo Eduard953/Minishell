@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/15 14:22:12 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/22 12:10:16 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	launch_exe(char **arg, char ***envp, int returncode)
 	}
 	waitpid(pid, &returncode, 0);
 	if (WIFEXITED(returncode))
-	 	returncode = WEXITSTATUS(returncode);
+		returncode = WEXITSTATUS(returncode);
 	else
 		returncode = 0;
 	return (returncode);
