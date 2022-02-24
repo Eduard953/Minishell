@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 15:21:27 by pstengl           #+#    #+#             */
-/*   Updated: 2022/01/31 13:55:15 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 12:50:46 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,5 +113,6 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	ft_arrclear(char **arr, void (*f)(void *content));
 size_t	ft_arrlen(char **arr);
 char	**ft_arrdup(char **in_arr);
+size_t	ft_freestrlen(const char *str, void (*f)(void *));
 
 #endif
