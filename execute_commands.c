@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 11:44:39 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/24 12:58:46 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	execute_command(t_list *commands, char ***envp, int returncode)
 			fdin = dup(save_stdin);
 		else if (ft_strncmp(instr->in, "#text", 5) == 0)
 		{
-			fdin = open("./.mstmp", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+			fdin = open("./.mstmp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 			write(fdin, instr->in + 5, ft_strlen(instr->in) - 5);
 			close(fdin);
 			fdin = open("./.mstmp", O_RDONLY);
@@ -111,7 +111,7 @@ int	execute_command(t_list *commands, char ***envp, int returncode)
 		else if (ft_strncmp(instr->out, "#append", 7) == 0)
 			fdout = open(instr->out + 7, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
 		else
-			fdout = open(instr->out, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+			fdout = open(instr->out, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 		if (fdout < 0)
 		{
 			perror("Pipes");

@@ -6,20 +6,20 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 13:03:08 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/14 13:34:36 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/24 13:00:57 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	red_left(char *in, char *line, int length, t_list *instructions)
+int	red_left(char *in, char *line, int length, t_list **instructions)
 {
 	t_instruction	*instr;
 
 	instr = instr_create(line, length, in, "#stdout");
 	in = "#stdin";
-	ft_lstadd(&instructions, instr);
-	instr = ft_lstat(instructions, 0)->content;
+	ft_lstadd(instructions, instr);
+	instr = ft_lstat(*instructions, 0)->content;
 	line += length + 1;
 	if (*line == '<')
 	{
@@ -37,28 +37,27 @@ int	red_left(char *in, char *line, int length, t_list *instructions)
 	}
 	else
 		instr->in = find_fname(line);
-	ft_print(instr->in);
-	return (ft_strlen(find_fname(line)));
+	return (ft_freestrlen(find_fname(line), free) + 1);
 }
 
-int	red_right(char *in, char *line, int length, t_list *instructions)
+int	red_right(char *in, char *line, int length, t_list **instructions)
 {
 	t_instruction	*instr;
 
 	instr = instr_create(line, length, in, "");
 	in = "#stdin";
-	line += length;
+	line += length + 1;
 	if (*line == '>')
 	{
 		line++;
 		instr->text = ft_strdup("#append");
-		ft_strext(&instr->text, find_fname(line), ft_strlen(find_fname(line)));
+		ft_strext(&instr->text, find_fname(line), ft_freestrlen(find_fname(line), free));
 		instr->out = instr->text;
 	}
 	else
 		instr->out = find_fname(line);
-	ft_lstadd(&instructions, instr);
-	return (ft_strlen(find_fname(line)));
+	ft_lstadd(instructions, instr);
+	return (ft_freestrlen(find_fname(line), free) + 1);
 }
 
 t_list	*find_token(char *line)
@@ -80,12 +79,12 @@ t_list	*find_token(char *line)
 	{
 		if (line[index] == '<')
 		{
-			index += red_left(in, &line[start], (index - start), instructions);
+			index += red_left(in, &line[start], (index - start), &instructions);
 			start = index + 1;
 		}
 		if (line[index] == '>')
 		{
-			index += red_right(in, &line[start], (index - start), instructions);
+			index += red_right(in, &line[start], (index - start), &instructions);
 			start = index + 1;
 		}
 		if (line[index] == '|')
