@@ -6,24 +6,11 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/22 12:33:58 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 13:36:14 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	ft_checkname(char *name)
-{
-	if (ft_isdigit(name[0]) || (ft_strlen(name) < 1))
-		return (0);
-	while (*name)
-	{
-		if (!(ft_isalnum(*name) || (*name == '_')))
-			return (0);
-		name++;
-	}
-	return (1);
-}
 
 int	export_helper(char ***envp, char *token, char *arg)
 {
@@ -77,6 +64,33 @@ char	**unset_helper(char **envp, char *arg)
 	return (temp);
 }
 
+int	export_print_declare(char **envp)
+{
+	char	**parts;
+	char	*var;
+
+	while (*envp)
+	{
+		parts = ft_split(*envp, '=');
+		ft_print("declare -x ");
+		ft_print(parts[0]);
+		ft_print("=\"");
+		var = parts[1];
+		while (*var)
+		{
+			if (*var == '"')
+				ft_print("\\\"");
+			else
+				ft_printc(*var);
+			var++;
+		}
+		ft_println("\"");
+		ft_arrclear(parts, free);
+		envp++;
+	}
+	return (0);
+}
+
 int	builtin_export(char **arg, char ***envp)
 {
 	int		j;
@@ -85,6 +99,8 @@ int	builtin_export(char **arg, char ***envp)
 
 	j = 0;
 	returncode = 0;
+	if (ft_arrlen(arg) <= 1)
+		return (export_print_declare(*envp));
 	while (arg[++j])
 	{
 		if (!(ft_strchr(arg[j], '=')))

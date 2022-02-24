@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 12:05:42 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 13:36:09 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,6 @@ int				error(int errorcode);
 char			*cwd(void);
 t_list			*find_token(char *line);
 char			*find_fname(char *line);
+int				ft_checkname(char *name);
 
 #endif
