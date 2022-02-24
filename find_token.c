@@ -6,45 +6,62 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 13:03:08 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 15:13:34 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 17:12:09 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_instruction	*newxt_instr(char *line, int length,
+		t_list **instructions, char *in)
+{
+	t_instruction	*instr;
+
+	if (length > 1)
+	{
+		instr = instr_create(line, length, in, "#stdout");
+		ft_lstadd(instructions, instr);
+	}
+	else
+		instr = ft_lstat(*instructions, -1)->content;
+	return (instr);
+}
+
+char	*gather_text(char *fname)
+{
+	char	*buffer;
+	char	*output;
+
+	output = ft_strdup("#text");
+	while (1)
+	{
+		buffer = readline("> ");
+		if (!buffer || ft_strcmp(buffer, fname) == 0)
+		{
+			free(buffer);
+			break ;
+		}
+		ft_strext(&output, buffer, ft_strlen(buffer));
+		ft_strext(&output, "\n", 1);
+		free(buffer);
+	}
+	return (output);
+}
 
 int	red_left(char *line, int length, t_list **instructions)
 {
 	t_instruction	*instr;
 	char			*fname;
 
-	if (length > 1)
-	{
-		instr = instr_create(line, length, "", "#stdout");
-		ft_lstadd(instructions, instr);
-	}
-	else
-		instr = ft_lstat(*instructions, -1)->content;
+	instr = newxt_instr(line, length, instructions, "");
 	line += length + 1;
 	free(instr->in);
 	if (*line == '<')
 	{
 		line++;
-		instr->in = ft_strdup("#text");
-		while (1)
-		{
-			instr->text = readline("> ");
-			fname = find_fname(line);
-			if (!instr->text || ft_strcmp(instr->text, fname) == 0)
-			{
-				free(instr->text);
-				free(fname);
-				break ;
-			}
-			ft_strext(&(instr->in), instr->text, ft_strlen(instr->text));
-			ft_strext(&(instr->in), "\n", 1);
-			free(instr->text);
-			free(fname);
-		}
+		fname = find_fname(line);
+		instr->in = gather_text(fname);
+		free(fname);
 	}
 	else
 		instr->in = find_fname(line);
@@ -56,13 +73,7 @@ int	red_right(char **in, char *line, int length, t_list **instructions)
 	t_instruction	*instr;
 	char			*fname;
 
-	if (length > 1)
-	{
-		instr = instr_create(line, length, *in, "");
-		ft_lstadd(instructions, instr);
-	}
-	else
-		instr = ft_lstat(*instructions, -1)->content;
+	instr = newxt_instr(line, length, instructions, *in);
 	*in = "#stdin";
 	line += length + 1;
 	free(instr->out);
@@ -82,78 +93,27 @@ int	red_right(char **in, char *line, int length, t_list **instructions)
 
 t_list	*find_token(char *line)
 {
-	int				start;
-	int				index;
+	int				length;
 	char			*in;
-	t_instruction	*instr;
 	t_list			*instructions;
-	char			quote;
 
-	start = 0;
-	index = 0;
 	instructions = NULL;
 	in = "#stdin";
-	while (line[index] != '\0')
+	length = 0;
+	while (line[length] != '\0')
 	{
-		if (line[index] == '|')
-		{
-			if ((index - start) > 1)
-			{
-				instr = instr_create(&line[start], (index - start), in, "#pipe");
-				ft_lstadd(&instructions, instr);
-				in = "#pipe";
-			}
-			else
-				in = "#text";
-			advance(line, &index, &start);
-		}
-		if (line[index] == '<')
-		{
-			index += red_left(&line[start], (index - start), &instructions);
-			in = "#stdin";
-			start = index + 1;
-		}
-		if (line[index] == '>')
-		{
-			index += red_right(&in, &line[start], (index - start), &instructions);
-			start = index + 1;
-		}
-		if (line[index] == '#')
-		{
-			instr = instr_create(&line[start], (index - start), in, "#stdout");
-			in = "#stdin";
-			ft_lstadd(&instructions, instr);
-			advance(line, &index, &start);
-			index++;
-			while (line[index] != '\n' && line[index] != '\0')
-				index++;
-			start = index + 1;
-		}
-		if (line[index] == '\"' || line[index] == '\'')
-		{
-			quote = line[index];
-			index++;
-			while (line[index] != quote && line[index] != '\0')
-				index++;
-			if (line[index] == '\0')
-			{
-				ft_putstr_fd("Syntax error: Unclosed quotes\n", 2);
-				return (NULL);
-			}
-		}
-		if (line[index] == '\\' || line[index] == ';')
-		{
-			ft_putstr_fd("Syntax error: Unexpected ", 2);
-			ft_putchar_fd(line[index], 2);
-			ft_putstr_fd("\n", 2);
+		handle_pipe(&instructions, &in, &line, &length);
+		handle_inred(&instructions, &in, &line, &length);
+		handle_outred(&instructions, &in, &line, &length);
+		if (handle_quotes(&line, &length))
 			return (NULL);
-		}
-		index++;
+		if (handle_forbidden(&line, &length))
+			return (NULL);
+		if (line[length] == '#')
+			break ;
+		length++;
 	}
-	if (index - start > 1)
-	{
-		instr = instr_create(&line[start], (index - start), in, "#stdout");
-		ft_lstadd(&instructions, instr);
-	}
+	if (length > 1)
+		ft_lstadd(&instructions, instr_create(line, length, in, "#stdout"));
 	return (instructions);
 }
