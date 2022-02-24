@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:21:22 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 12:07:30 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 13:23:18 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,5 @@ int	builtin_exit(char **args, int returncode)
 		return (check_arg(args));
 	if (ft_arrlen(args) == 2)
 		returncode = ft_atoi(args[1]) % 256;
-	return(256 + returncode);
+	return (256 + returncode);
 }
