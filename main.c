@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 13:16:18 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:26:14 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,24 @@ char	*find_in_path(char *exec_name, char **envp)
 	return (full_path);
 }
 
+void	update_pwd(char ***envp)
+{
+	char	*path_arg;
+	char	*path;
+	char	*args[3];
+
+	path_arg = NULL;
+	path_arg = ft_strext(&path_arg, "PWD=", 4);
+	path = cwd();
+	path_arg = ft_strext(&path_arg, path, ft_strlen(path));
+	free(path);
+	args[0] = "export";
+	args[1] = path_arg;
+	args[2] = NULL;
+	builtin_export(args, envp);
+	free(path_arg);
+}
+
 int	main(int argc, char **argv, char **input_envp)
 {
 	t_data	data;
@@ -254,6 +272,7 @@ int	main(int argc, char **argv, char **input_envp)
 	signal(SIGINT, sig_handler);
 	returncode = 0;
 	envp = ft_arrdup(input_envp);
+	update_pwd(&envp);
 	while (returncode < 256 && (argc || !argc) && (argv || !argv))
 	{
 		data.prompt = build_prompt();
