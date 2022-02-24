@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 17:14:05 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 17:48:23 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,17 @@ t_list			*find_token(char *line);
 char			*find_fname(char *line);
 int				ft_checkname(char *name);
 int				red_left(char *line, int length, t_list **instructions);
-int				red_right(char **in, char *line, int length, t_list **instructions);
-void			handle_pipe(t_list **instructions, char **in, char **line, int *length);
-void			handle_inred(t_list **instructions, char **in, char **line, int *length);
-void			handle_outred(t_list **instructions, char **in, char **line, int *length);
+int				red_right(char **in, char *line, int length,
+					t_list **instructions);
+void			handle_pipe(t_list **instructions, char **in,
+					char **line, int *length);
+void			handle_inred(t_list **instructions, char **in,
+					char **line, int *length);
+void			handle_outred(t_list **instructions, char **in,
+					char **line, int *length);
 int				handle_quotes(char **line, int *length);
 int				handle_forbidden(char **line, int *length);
+int				launch_exe(char **arg, char ***envp, int returncode,
+					int wait_finish);
 
 #endif

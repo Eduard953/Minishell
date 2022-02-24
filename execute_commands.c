@@ -6,141 +6,97 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 17:29:33 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 17:46:11 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	replace_arg_with_path(char ***arg, char **envp)
+int	setup_inred(char *filename, int *fd, int *fd_save)
 {
-	char	*path;
-
-	if (!ft_isalpha((*arg)[0][0]))
-		return (0);
-	path = find_in_path((*arg)[0], envp);
-	if (path == NULL)
+	if (ft_strcmp(filename, "#stdin") == 0)
+		fd[0] = dup(fd_save[0]);
+	else if (ft_strncmp(filename, "#text", 5) == 0)
 	{
-		ft_putstr_fd("Command not Found\n", 2);
+		fd[0] = open("./.mstmp", O_WRONLY | O_CREAT | O_TRUNC,
+				S_IRUSR | S_IWUSR);
+		write(fd[0], filename + 5, ft_strlen(filename) - 5);
+		close(fd[0]);
+		fd[0] = open("./.mstmp", O_RDONLY);
+	}
+	else if (ft_strcmp(filename, "#pipe") != 0)
+		fd[0] = open(filename, O_RDONLY);
+	if (fd[0] < 0)
+	{
+		perror("Pipes");
 		return (1);
 	}
-	free(arg[0]);
-	(*arg)[0] = path;
+	dup2(fd[0], 0);
+	close(fd[0]);
 	return (0);
 }
 
-int	run_external(char **arg, char **envp, int wait_finish)
+int	setup_outred(char *filename, int *fd, int *fd_save, int *fd_pipe)
 {
-	int		pid;
-	int		returncode;
-
-	if (!replace_arg_with_path(&arg, envp))
-		return (127);
-	pid = fork();
-	if (!pid)
+	if (ft_strcmp(filename, "#stdout") == 0)
+		fd[1] = dup(fd_save[1]);
+	else if (ft_strcmp(filename, "#pipe") == 0)
 	{
-		execve(arg[0], arg, envp);
-		perror("execve");
-		exit(1);
+		pipe(fd_pipe);
+		fd[0] = fd_pipe[0];
+		fd[1] = fd_pipe[1];
 	}
-	if (!wait_finish)
-		return (0);
-	waitpid(pid, &returncode, 0);
-	if (WIFEXITED(returncode))
-		return (WEXITSTATUS(returncode));
+	else if (ft_strncmp(filename, "#append", 7) == 0)
+		fd[1] = open(filename + 7, O_WRONLY | O_CREAT | O_APPEND,
+				S_IRUSR | S_IWUSR);
+	else
+		fd[1] = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	if (fd[1] < 0)
+	{
+		perror("Pipes");
+		return (1);
+	}
+	dup2(fd[1], 1);
+	close(fd[1]);
 	return (0);
 }
 
-int	launch_exe(char **arg, char ***envp, int returncode, int wait_finish)
+char	**setup_command(t_instruction *instr, int *fd, int *fd_save)
 {
-	if (ft_strcmp(arg[0], "echo") == 0)
-		return (builtin_echo(arg));
-	if (ft_strcmp(arg[0], "cd") == 0)
-		return (builtin_cd(arg, envp));
-	if (ft_strcmp(arg[0], "exit") == 0)
-		return (builtin_exit(arg, returncode));
-	if (ft_strcmp(arg[0], "env") == 0)
-		return (builtin_env((*envp)));
-	if (ft_strcmp(arg[0], "export") == 0)
-		return (builtin_export(arg, envp));
-	if (ft_strcmp(arg[0], "unset") == 0)
-	{
-		(*envp) = builtin_unset(arg, (*envp));
-		return (0);
-	}
-	if (ft_strcmp(arg[0], "pwd") == 0)
-		return (builtint_pwd());
-	return (run_external(arg, *envp, wait_finish));
+	char			**arg;
+	int				fd_pipe[2];
+
+	arg = replace_arg(instr->command);
+	if (!arg)
+		return (NULL);
+	if (!setup_inred(instr->in, fd, fd_save))
+		return (NULL);
+	if (!setup_outred(instr->out, fd, fd_save, fd_pipe))
+		return (NULL);
+	return (arg);
 }
 
 int	execute_command(t_list *commands, char ***envp, int returncode)
 {
-	t_instruction	*instr;
-	char			**arg;
-	int				save_stdin;
-	int				save_stdout;
-	int				fdin;
-	int				fdout;
-	int				fdpipe[2];
+	char	**arg;
+	int		fd[2];
+	int		fd_save[2];
 
-	save_stdin = dup(0);
-	save_stdout = dup(1);
+	fd_save[0] = dup(0);
+	fd_save[1] = dup(1);
 	while (commands)
 	{
-		instr = commands->content;
-		arg = replace_arg(instr->command);
-		if (!arg)
-		{
-			commands = commands->next;
-			continue ;
-		}
-		if (ft_strcmp(instr->in, "#stdin") == 0)
-			fdin = dup(save_stdin);
-		else if (ft_strncmp(instr->in, "#text", 5) == 0)
-		{
-			fdin = open("./.mstmp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-			write(fdin, instr->in + 5, ft_strlen(instr->in) - 5);
-			close(fdin);
-			fdin = open("./.mstmp", O_RDONLY);
-		}
-		else if (ft_strcmp(instr->in, "#pipe") != 0)
-			fdin = open(instr->in, O_RDONLY);
-		if (fdin < 0)
-		{
-			perror("Pipes");
-			ft_arrclear(arg, free);
-			return (1);
-		}
-		dup2(fdin, 0);
-		close(fdin);
-		if (ft_strcmp(instr->out, "#stdout") == 0)
-			fdout = dup(save_stdout);
-		else if (ft_strcmp(instr->out, "#pipe") == 0)
-		{
-			pipe(fdpipe);
-			fdin = fdpipe[0];
-			fdout = fdpipe[1];
-		}
-		else if (ft_strncmp(instr->out, "#append", 7) == 0)
-			fdout = open(instr->out + 7, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-		else
-			fdout = open(instr->out, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-		if (fdout < 0)
-		{
-			perror("Pipes");
-			ft_arrclear(arg, free);
-			return (1);
-		}
-		dup2(fdout, 1);
-		close(fdout);
-		returncode = launch_exe(arg, envp, returncode, commands->next==NULL);
+		arg = setup_command(commands->content, fd, fd_save);
+		if (arg)
+			returncode = launch_exe(arg, envp, returncode,
+					commands->next == NULL);
 		ft_arrclear(arg, free);
 		commands = commands->next;
 	}
-	dup2(save_stdin, 0);
-	dup2(save_stdout, 1);
-	close(save_stdin);
-	close(save_stdout);
+	dup2(fd_save[0], 0);
+	dup2(fd_save[1], 1);
+	close(fd_save[0]);
+	close(fd_save[1]);
 	unlink("./.mstmp");
 	return (returncode);
 }
