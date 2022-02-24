@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:26:40 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/07 15:38:09 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/22 12:33:58 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,22 @@ int	ft_checkname(char *name)
 	return (1);
 }
 
-int	export_helper(char ***envp, char *token, char *value, char *arg)
+int	export_helper(char ***envp, char *token, char *arg)
 {
 	char	**temp;
 	int		i;
 
-	if (value)
+	i = 0;
+	while ((*envp)[i] != NULL)
 	{
-		i = 0;
-		while ((*envp)[i] != NULL)
+		if (!ft_strncmp((*envp)[i], token, ft_strlen(token))
+				&& (*envp)[i][ft_strlen(token)] == '=')
 		{
-			if (ft_strncmp((*envp)[i], arg, ft_strlen(token) + 1) == 0)
-			{
-				free((*envp)[i]);
-				(*envp)[i] = ft_strdup(arg);
-			}
-			i++;
+			free((*envp)[i]);
+			(*envp)[i] = ft_strdup(arg);
+			return (0);
 		}
-		return (0);
+		i++;
 	}
 	temp = ft_calloc(ft_arrlen(*envp) + 2, sizeof(char *));
 	if (!temp)
@@ -65,15 +63,14 @@ char	**unset_helper(char **envp, char *arg)
 	temp = ft_calloc(sizeof(char *), (ft_arrlen(envp) + 2));
 	while (envp[i] != NULL)
 	{
-		if (!(ft_strncmp(envp[i], arg, ft_strlen(arg))))
+		if (!ft_strncmp(envp[i], arg, ft_strlen(arg))
+			&& envp[i][ft_strlen(arg)] == '=')
+			free(envp[i]);
+		else
 		{
-			if (envp[i][ft_strlen(arg)] == '=')
-				i++;
+			temp[j] = envp[i];
+			j++;
 		}
-		if (envp[i] == NULL)
-			break ;
-		temp[j] = envp[i];
-		j++;
 		i++;
 	}
 	free(envp);
@@ -85,7 +82,6 @@ int	builtin_export(char **arg, char ***envp)
 	int		j;
 	int		returncode;
 	char	**tokens;
-	char	*value;
 
 	j = 0;
 	returncode = 0;
@@ -98,12 +94,10 @@ int	builtin_export(char **arg, char ***envp)
 			continue ;
 		}
 		tokens = ft_split(arg[j], '=');
-		value = ft_in_envp(*envp, tokens[0]);
 		if (ft_checkname(tokens[0]))
-			returncode += export_helper(envp, tokens[0], value, arg[j]);
+			returncode += export_helper(envp, tokens[0], arg[j]);
 		else
 			error (1);
-		free(value);
 		ft_arrclear(tokens, free);
 	}
 	return ((returncode > 0));
