@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/15 14:22:00 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/15 14:41:18 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ char	*replace_var(char *line, char **envp, int returncode)
 			if (line[index] == '?')
 			{
 				value = ft_itoa(returncode);
-				if (value) {
+				if (value)
+				{
 					ft_strext(&rep_line, value, ft_strlen(value));
 					free(value);
 				}
