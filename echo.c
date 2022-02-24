@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:15:21 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 15:32:01 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 16:02:13 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	find_minusn(char *str)
 	if (*str != '-')
 		return (0);
 	str++;
-	while(*str)
+	while (*str)
 	{
 		if (*str != 'n')
 			return (0);
