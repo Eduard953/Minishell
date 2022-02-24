@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 15:26:14 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:59:36 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,29 @@ char	*ft_in_envp(char **envp, char *variable)
 char	*find_fname(char *line)
 {
 	char	*filename;
-	int		length;
+	int		writer;
+	char	quote;
 
 	while (*line == ' ')
 		line++;
-	length = 0;
-	while (line[length] != '\0' && line[length] != ' ')
-		length++;
-	filename = ft_calloc(1, length + 1);
-	ft_strlcpy(filename, line, length + 1);
+	filename = ft_calloc(1, ft_strlen(line) + 1);
+	writer = 0;
+	quote = '\0';
+	while (*line != '\0')
+	{
+		if (*line == '"' || *line == '\'')
+		{
+			if (quote == '\0')
+				quote = *line;
+			else
+				quote = '\0';
+		}
+		else if ((*line == '#' || *line == ' ') && quote == '\0')
+			break ;
+		else
+			filename[writer++] = *line;
+		line++;
+	}
 	return (filename);
 }
 
