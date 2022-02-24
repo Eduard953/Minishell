@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:21:22 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/22 12:11:01 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 11:44:50 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,7 @@ int	builtin_exit(char **args, int returncode)
 	if (check_arg(args))
 		return (check_arg(args));
 	if (ft_arrlen(args) == 2)
-	{
 		returncode = ft_atoi(args[1]) % 256;
-		printf("here %d\n", returncode);
-	}
 	//clean(); // Free all memory?
 	exit(returncode);
 }
