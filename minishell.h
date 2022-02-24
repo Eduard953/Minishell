@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 13:36:09 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 17:58:54 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@
 
 typedef struct s_data
 {
+	t_list	*tokens;
 	char	*line;
 	char	*prompt;
+	char	*rep_line;
+	int		returncode;
 }	t_data;
 
 typedef struct s_instruction
@@ -40,6 +43,14 @@ typedef struct s_instruction
 	char	*out;
 	char	*text;
 }	t_instruction;
+
+typedef struct s_int
+{
+	int		start;
+	int		idx;
+	int		len;
+	int		is_q;
+}	t_int;
 
 int				execute_command(t_list *commands, char ***envp, int returncode);
 int				builtin_cd(char **args, char ***envp);
@@ -62,5 +73,10 @@ char			*cwd(void);
 t_list			*find_token(char *line);
 char			*find_fname(char *line);
 int				ft_checkname(char *name);
+void			del(void *content);
+void			update_pwd(char ***envp);
+void			init_ints(t_int *n);
+char			*ft_in_envp(char **envp, char *variable);
+char			**replace_arg(char *line);
 
 #endif
