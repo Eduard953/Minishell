@@ -6,11 +6,27 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:15:21 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/11 18:13:55 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:32:01 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	find_minusn(char *str)
+{
+	if (!str)
+		return (0);
+	if (*str != '-')
+		return (0);
+	str++;
+	while(*str)
+	{
+		if (*str != 'n')
+			return (0);
+		str++;
+	}
+	return (1);
+}
 
 int	builtin_echo(char **args)
 {
@@ -23,7 +39,7 @@ int	builtin_echo(char **args)
 	index = 1;
 	if (argslen > 1)
 	{
-		if (ft_strcmp(args[index], "-n") == 0)
+		while (find_minusn(args[index]) && index < argslen)
 		{
 			newline = 0;
 			index++;
