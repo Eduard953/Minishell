@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:58:57 by pstengl           #+#    #+#             */
-/*   Updated: 2022/01/31 14:02:10 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 17:50:09 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	ft_arrclear(char **arr, void (*f)(void *content))
 {
 	int	index;
 
+	if (!arr)
+		return ;
 	index = 0;
 	while (arr[index])
 	{
