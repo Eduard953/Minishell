@@ -6,13 +6,13 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 12:58:46 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:10:04 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	launch_exe(char **arg, char ***envp, int returncode)
+int	launch_exe(char **arg, char ***envp, int returncode, int wait_finish)
 {
 	int		pid;
 	char	*path;
@@ -52,11 +52,13 @@ int	launch_exe(char **arg, char ***envp, int returncode)
 		perror("execve");
 		exit(1);
 	}
-	waitpid(pid, &returncode, 0);
-	if (WIFEXITED(returncode))
-		returncode = WEXITSTATUS(returncode);
-	else
-		returncode = 0;
+	returncode = 0;
+	if (wait_finish)
+	{
+		waitpid(pid, &returncode, 0);
+		if (WIFEXITED(returncode))
+			returncode = WEXITSTATUS(returncode);
+	}
 	return (returncode);
 }
 
@@ -120,7 +122,7 @@ int	execute_command(t_list *commands, char ***envp, int returncode)
 		}
 		dup2(fdout, 1);
 		close(fdout);
-		returncode = launch_exe(arg, envp, returncode);
+		returncode = launch_exe(arg, envp, returncode, commands->next==NULL);
 		ft_arrclear(arg, free);
 		commands = commands->next;
 	}
