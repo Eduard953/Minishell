@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/15 14:17:10 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 12:05:42 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 typedef struct s_data
 {
 	char	*line;
+	char	*prompt;
 }	t_data;
 
 typedef struct s_instruction

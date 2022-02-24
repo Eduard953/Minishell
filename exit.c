@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:21:22 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 11:44:50 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/24 12:07:30 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ int	check_arg(char **args)
 
 	i = 1;
 	if (ft_arrlen(args) > 2)
-		return (error(1)); // need the right errorcodes
+		return (error(7));
 	while (args[i])
 	{
 		if (!ft_isnumber(args[i]))
-			return (error(127)); // need the right errorcodes
+			return (error(1));
 		i++;
 	}
 	return (0);
@@ -48,6 +48,5 @@ int	builtin_exit(char **args, int returncode)
 		return (check_arg(args));
 	if (ft_arrlen(args) == 2)
 		returncode = ft_atoi(args[1]) % 256;
-	//clean(); // Free all memory?
-	exit(returncode);
+	return(256 + returncode);
 }

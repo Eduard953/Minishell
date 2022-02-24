@@ -18,9 +18,5 @@ sudo apt install readline-common libreadline-dev
 ## TODO:
 - Fix exactly 34 norm errors (`norminette | grep -v OK | wc -l`)
 - Maybe fix some last memory leaks
-- exit.c fix returncodes when error
-- exit.c the handling of the error Code in our code for "external" commands up to the variable replacement is broken
-- free memory after exit.c - maybe ebeiline
 - Fix redirection pipes
-- Fix ec"ho" behaviour
 - export with no args: declare -x env

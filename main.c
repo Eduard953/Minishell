@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 11:44:56 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/24 12:10:10 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,6 @@ char	*find_in_path(char *exec_name, char **envp)
 int	main(int argc, char **argv, char **input_envp)
 {
 	t_data	data;
-	char	*prompt;
 	char	*rep_line;
 	t_list	*tokens;
 	int		returncode;
@@ -254,10 +253,11 @@ int	main(int argc, char **argv, char **input_envp)
 	signal(SIGINT, sig_handler);
 	returncode = 0;
 	envp = ft_arrdup(input_envp);
-	while (1 && (argc || !argc) && (argv || !argv))
+	while (returncode < 256 && (argc || !argc) && (argv || !argv))
 	{
-		prompt = build_prompt();
-		data.line = readline(prompt);
+		data.prompt = build_prompt();
+		data.line = readline(data.prompt);
+		free(data.prompt);
 		if (!data.line)
 			break ;
 		add_history(data.line);
@@ -267,9 +267,7 @@ int	main(int argc, char **argv, char **input_envp)
 		returncode = execute_command(tokens, &envp, returncode);
 		ft_lstclear(&tokens, del);
 		free(data.line);
-		free(prompt);
 	}
 	ft_arrclear(envp, free);
-	free(prompt);
-	return (0);
+	return (returncode - 256);
 }
