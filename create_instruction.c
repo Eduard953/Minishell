@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:23:09 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/06 15:23:27 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/24 13:07:53 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ t_instruction	*instr_create(char *line, int length, char *in, char *out)
 	ft_strlcpy(command, line, length + 1);
 	instr = ft_calloc(1, sizeof(t_instruction));
 	instr->command = ft_strtrim(command, " ");
-	instr->in = in;
-	instr->out = out;
+	instr->in = ft_strdup(in);
+	instr->out = ft_strdup(out);
 	free(command);
 	return (instr);
 }

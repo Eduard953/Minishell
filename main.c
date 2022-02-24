@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 12:10:10 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/24 13:16:18 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ static void	del(void *content)
 
 	instr = (t_instruction *)content;
 	free(instr->command);
+	free(instr->in);
+	free(instr->out);
 	free(instr);
 }
 
@@ -183,10 +185,9 @@ char	**replace_arg(char *line)
 			}
 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
 			if (ft_strcmp(replaced_arg, "") != 0)
-			{
 				ft_lstadd(&arg_arr, replaced_arg);
-				replaced_arg = NULL;
-			}
+			else
+				free(replaced_arg);
 			break ;
 		}
 		index++;
