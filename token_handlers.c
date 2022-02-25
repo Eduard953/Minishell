@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:11:43 by pstengl           #+#    #+#             */
-/*   Updated: 2022/02/24 17:12:01 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 13:42:41 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_pipe(t_list **instructions, char **in, char **line, int *length)
 	}
 	else
 		*in = "#text";
-	*line += *length;
+	*line += *length + 1;
 	*length = 0;
 }
 
