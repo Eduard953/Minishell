@@ -9,7 +9,7 @@ RM=rm -f
 
 NAME=minishell
 
-SRC=main.c execute_commands.c echo.c build_prompt.c cd.c create_instruction.c env.c exit.c export.c signal.c utils.c pwd.c error.c cwd.c find_token.c
+SRC=main.c execute_commands.c echo.c build_prompt.c cd.c create_instruction.c env.c exit.c export.c signal.c utils.c pwd.c error.c cwd.c find_token.c replace_arg.c
 BONUS_SRC=
 
 OBJ=${SRC:.c=.o}

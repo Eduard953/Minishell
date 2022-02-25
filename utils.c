@@ -6,11 +6,31 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:17:30 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 13:35:44 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 15:14:39 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	del(void *content)
+{
+	t_instruction	*instr;
+
+	instr = (t_instruction *)content;
+	free(instr->command);
+	free(instr->in);
+	free(instr->out);
+	free(instr);
+}
+
+void	init_ints(t_int *n)
+{
+	n->idx = 0;
+	n->is_q = 0;
+	n->len = 0;
+	n->start = 0;
+	n->quote = '"';
+}
 
 int	ft_checkname(char *name)
 {
@@ -38,3 +58,46 @@ void	advance(char *line, int *index, int *start)
 		(*start)++;
 	*index = (*start) - 1;
 }
+
+char	*ft_in_envp(char **envp, char *variable)
+{
+	char	**parts;
+	char	*value;
+
+	value = NULL;
+	while (*envp)
+	{
+		parts = ft_split(*envp, '=');
+		if (parts)
+		{
+			if (ft_strcmp(parts[0], variable) == 0)
+				if (parts[1])
+					value = ft_strdup(parts[1]);
+			ft_arrclear(parts, free);
+		}
+		if (value)
+			break ;
+		envp++;
+	}
+	return (value);
+}
+
+
+
+// if (((line[index] == '\'' || line[index] == '\"') && !is_quoted) || (line[index] == quote && is_quoted))
+// 		{
+// 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
+// 			quote = line[index];
+// 			is_quoted = !is_quoted;
+// 			start = index + 1;
+// 		}
+// 		if (line[index] == ' ' && !is_quoted)
+// 		{
+// 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
+// 			if (ft_strcmp(replaced_arg, "") != 0)
+// 			{
+// 				ft_lstadd(&arg_arr, replaced_arg);
+// 				replaced_arg = NULL;
+// 			}
+// 			advance(line, &index, &start);
+// 		}
