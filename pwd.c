@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 16:00:54 by pstengl           #+#    #+#             */
-/*   Updated: 2022/02/24 16:07:15 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/25 16:48:33 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	builtint_pwd(void)
 {
 	char	*path;
 
-	ft_println("Builtin pwd");
 	path = ft_calloc(1024, 1);
 	getcwd(path, 1024);
 	ft_println(path);
