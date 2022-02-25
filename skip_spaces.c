@@ -1,31 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_arrclear_bonus.c                                :+:      :+:    :+:   */
+/*   skip_spaces.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/31 12:58:57 by pstengl           #+#    #+#             */
-/*   Updated: 2022/02/24 17:50:09 by pstengl          ###   ########.fr       */
+/*   Created: 2022/02/25 16:23:29 by pstengl           #+#    #+#             */
+/*   Updated: 2022/02/25 16:23:38 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include <stdlib.h>
+#include "minishell.h"
 
-void	ft_arrclear(char **arr, void (*f)(void *content))
+void	skip_spaces(char **line)
 {
-	int	index;
-
-	if (!arr)
-		return ;
-	index = 0;
-	while (arr[index])
-	{
-		f(arr[index]);
-		arr[index] = NULL;
-		index++;
-	}
-	free(arr);
-	arr = NULL;
+	while (**line != '\0' && **line == ' ')
+		(*line)++;
 }

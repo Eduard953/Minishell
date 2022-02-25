@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/25 15:29:28 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/25 16:26:40 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,21 @@ void			init_ints(t_int *n);
 char			*ft_in_envp(char **envp, char *variable);
 char			**replace_arg(char *line);
 char			*find_in_path(char *exec_name, char **envp);
+int				red_left(char **line, int length, t_list **instructions);
+int				red_right(char **in, char **line, int length,
+					t_list **instructions);
+void			handle_pipe(t_list **instructions, char **in,
+					char **line, int *length);
+void			handle_inred(t_list **instructions, char **in,
+					char **line, int *length);
+void			handle_outred(t_list **instructions, char **in,
+					char **line, int *length);
+int				handle_quotes(char **line, int *length);
+int				handle_forbidden(char **line, int *length);
+int				launch_exe(char **arg, char ***envp, int returncode,
+					int wait_finish);
+t_instruction	*newxt_instr(char *line, int length, t_list **instructions,
+					char *in);
+void			skip_spaces(char **line);
 
 #endif
