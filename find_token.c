@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 13:03:08 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 17:12:09 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 16:23:41 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,47 +48,51 @@ char	*gather_text(char *fname)
 	return (output);
 }
 
-int	red_left(char *line, int length, t_list **instructions)
+int	red_left(char **line, int length, t_list **instructions)
 {
 	t_instruction	*instr;
 	char			*fname;
 
-	instr = newxt_instr(line, length, instructions, "");
-	line += length + 1;
+	instr = newxt_instr((*line), length, instructions, "");
+	(*line) += length + 1;
 	free(instr->in);
-	if (*line == '<')
+	skip_spaces(line);
+	if (**line == '<')
 	{
-		line++;
-		fname = find_fname(line);
+		(*line)++;
+		skip_spaces(line);
+		fname = find_fname((*line));
 		instr->in = gather_text(fname);
 		free(fname);
 	}
 	else
-		instr->in = find_fname(line);
-	return (ft_freestrlen(find_fname(line), free) + 2);
+		instr->in = find_fname((*line));
+	return (ft_freestrlen(find_fname((*line)), free));
 }
 
-int	red_right(char **in, char *line, int length, t_list **instructions)
+int	red_right(char **in, char **line, int length, t_list **instructions)
 {
 	t_instruction	*instr;
 	char			*fname;
 
-	instr = newxt_instr(line, length, instructions, *in);
+	instr = newxt_instr((*line), length, instructions, *in);
 	*in = "#stdin";
-	line += length + 1;
+	(*line) += length + 1;
 	free(instr->out);
-	if (*line == '>')
+	skip_spaces(line);
+	if (**line == '>')
 	{
-		line++;
+		(*line)++;
+		skip_spaces(line);
 		instr->text = ft_strdup("#append");
-		fname = find_fname(line);
+		fname = find_fname((*line));
 		ft_strext(&instr->text, fname, ft_strlen(fname));
 		free(fname);
 		instr->out = instr->text;
 	}
 	else
-		instr->out = find_fname(line);
-	return (ft_freestrlen(find_fname(line), free) + 2);
+		instr->out = find_fname((*line));
+	return (ft_freestrlen(find_fname((*line)), free));
 }
 
 t_list	*find_token(char *line)
@@ -102,7 +106,8 @@ t_list	*find_token(char *line)
 	length = 0;
 	while (line[length] != '\0')
 	{
-		handle_pipe(&instructions, &in, &line, &length);
+		if (line[length] == '|')
+			handle_pipe(&instructions, &in, &line, &length);
 		handle_inred(&instructions, &in, &line, &length);
 		handle_outred(&instructions, &in, &line, &length);
 		if (handle_quotes(&line, &length))

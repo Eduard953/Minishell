@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 17:06:02 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 15:59:36 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 15:34:59 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*find_fname(char *line)
 			else
 				quote = '\0';
 		}
-		else if ((*line == '#' || *line == ' ') && quote == '\0')
+		else if (ft_isoneof(*line, "# <>|;") && quote == '\0')
 			break ;
 		else
 			filename[writer++] = *line;

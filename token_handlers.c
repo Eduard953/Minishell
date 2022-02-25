@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:11:43 by pstengl           #+#    #+#             */
-/*   Updated: 2022/02/25 14:01:11 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 16:08:40 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,36 @@ void	handle_pipe(t_list **instructions, char **in, char **line, int *length)
 
 	if ((*line)[*length] != '|')
 		return ;
-	if (*length > 1)
+	if (*length <= 1)
+	{
+		instr = ft_lstat(*instructions, -1)->content;
+		if (strcmp(instr->out, "#stdout") == 0)
+		{
+			instr->out = ft_strdup("#pipe");
+			*in = "#pipe";
+		}
+		else
+			*in = "#text";
+	}
+	else
 	{
 		instr = instr_create(*line, *length, *in, "#pipe");
 		ft_lstadd(instructions, instr);
 		*in = "#pipe";
 	}
-	else
-		*in = "#text";
 	*line += *length + 1;
-	*length = 0;
+	skip_spaces(line);
+	*length = -1;
 }
 
 void	handle_inred(t_list **instructions, char **in, char **line, int *length)
 {
 	if ((*line)[*length] != '<')
 		return ;
-	*length += red_left(*line, *length, instructions);
+	(*line) += red_left(line, *length, instructions);
 	*in = "#stdin";
-	*line += *length + 1;
-	*length = 0;
+	skip_spaces(line);
+	*length = -1;
 }
 
 void	handle_outred(t_list **instructions, char **in, char **line,
@@ -45,9 +55,9 @@ void	handle_outred(t_list **instructions, char **in, char **line,
 {
 	if ((*line)[*length] != '>')
 		return ;
-	*length += red_right(in, *line, *length, instructions);
-	*line += *length + 1;
-	*length = 0;
+	(*line) += red_right(in, line, *length, instructions);
+	skip_spaces(line);
+	*length = -1;
 }
 
 int	handle_quotes(char **line, int *length)
