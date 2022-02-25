@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:45:42 by pstengl           #+#    #+#             */
-/*   Updated: 2022/02/24 17:46:13 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 13:16:30 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	replace_arg_with_path(char ***arg, char **envp)
 		ft_putstr_fd("Command not Found\n", 2);
 		return (1);
 	}
-	free(arg[0]);
+	free((*arg)[0]);
 	(*arg)[0] = path;
 	return (0);
 }
@@ -34,7 +34,7 @@ int	run_external(char **arg, char **envp, int wait_finish)
 	int		pid;
 	int		returncode;
 
-	if (!replace_arg_with_path(&arg, envp))
+	if (replace_arg_with_path(&arg, envp))
 		return (127);
 	pid = fork();
 	if (!pid)
