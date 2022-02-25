@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/25 15:14:51 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/25 15:29:28 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,6 @@ void			update_pwd(char ***envp);
 void			init_ints(t_int *n);
 char			*ft_in_envp(char **envp, char *variable);
 char			**replace_arg(char *line);
+char			*find_in_path(char *exec_name, char **envp);
 
 #endif
