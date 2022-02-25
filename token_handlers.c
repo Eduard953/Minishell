@@ -6,7 +6,7 @@
 /*   By: pstengl <pstengl@student.42wolfsburg.      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 17:11:43 by pstengl           #+#    #+#             */
-/*   Updated: 2022/02/25 13:42:41 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 14:01:11 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	handle_inred(t_list **instructions, char **in, char **line, int *length)
 	*length += red_left(*line, *length, instructions);
 	*in = "#stdin";
 	*line += *length + 1;
+	*length = 0;
 }
 
 void	handle_outred(t_list **instructions, char **in, char **line,
@@ -46,6 +47,7 @@ void	handle_outred(t_list **instructions, char **in, char **line,
 		return ;
 	*length += red_right(in, *line, *length, instructions);
 	*line += *length + 1;
+	*length = 0;
 }
 
 int	handle_quotes(char **line, int *length)
