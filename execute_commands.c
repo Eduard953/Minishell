@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:18:36 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/25 13:24:05 by pstengl          ###   ########.fr       */
+/*   Updated: 2022/02/25 17:38:38 by pstengl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 
 int	setup_inred(char *filename, int **fd, int **fd_save)
 {
+	int	fd_pipe[2];
+
 	if (ft_strcmp(filename, "#stdin") == 0)
 		(*fd)[0] = dup((*fd_save)[0]);
 	else if (ft_strncmp(filename, "#text", 5) == 0)
 	{
-		(*fd)[0] = open("./.mstmp", O_WRONLY | O_CREAT | O_TRUNC,
-				S_IRUSR | S_IWUSR);
-		write((*fd)[0], filename + 5, ft_strlen(filename) - 5);
-		close((*fd)[0]);
-		(*fd)[0] = open("./.mstmp", O_RDONLY);
+		pipe(fd_pipe);
+		write(fd_pipe[1], filename + 5, ft_strlen(filename) - 5);
+		(*fd)[0] = fd_pipe[0];
+		close(fd_pipe[1]);
 	}
 	else if (ft_strcmp(filename, "#pipe") != 0)
 		(*fd)[0] = open(filename, O_RDONLY);
@@ -100,7 +101,6 @@ int	execute_command(t_list *commands, char ***envp, int retcode)
 	dup2(fd_save[1], 1);
 	close(fd_save[0]);
 	close(fd_save[1]);
-	unlink("./.mstmp");
 	free(fd);
 	free(fd_save);
 	return (retcode);
