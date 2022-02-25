@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 15:17:30 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 17:35:56 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/25 15:14:39 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	init_ints(t_int *n)
 	n->is_q = 0;
 	n->len = 0;
 	n->start = 0;
+	n->quote = '"';
 }
 
 int	ft_checkname(char *name)
@@ -80,3 +81,23 @@ char	*ft_in_envp(char **envp, char *variable)
 	}
 	return (value);
 }
+
+
+
+// if (((line[index] == '\'' || line[index] == '\"') && !is_quoted) || (line[index] == quote && is_quoted))
+// 		{
+// 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
+// 			quote = line[index];
+// 			is_quoted = !is_quoted;
+// 			start = index + 1;
+// 		}
+// 		if (line[index] == ' ' && !is_quoted)
+// 		{
+// 			replaced_arg = ft_strext(&replaced_arg, &line[start], (index - start));
+// 			if (ft_strcmp(replaced_arg, "") != 0)
+// 			{
+// 				ft_lstadd(&arg_arr, replaced_arg);
+// 				replaced_arg = NULL;
+// 			}
+// 			advance(line, &index, &start);
+// 		}

@@ -6,7 +6,7 @@
 /*   By: ebeiline <ebeiline@42wolfsburg.de>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 18:09:24 by ebeiline          #+#    #+#             */
-/*   Updated: 2022/02/24 17:58:54 by ebeiline         ###   ########.fr       */
+/*   Updated: 2022/02/25 15:14:51 by ebeiline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_int
 	int		idx;
 	int		len;
 	int		is_q;
+	char	quote;
 }	t_int;
 
 int				execute_command(t_list *commands, char ***envp, int returncode);
